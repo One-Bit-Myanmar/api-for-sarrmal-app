@@ -1,2 +1,5 @@
 fastapi
 unicorn
+pydantic[email]
+motor
+pymongo
