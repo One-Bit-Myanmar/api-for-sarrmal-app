@@ -1,2 +1,12 @@
-uvicorn
 fastapi
+uvicorn
+pydantic
+motor
+pandas
+scikit-learn
+joblib
+python-dotenv
+pytest
+httpx
+flake8
+black
