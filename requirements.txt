@@ -3,3 +3,5 @@ unicorn
 pydantic[email]
 motor
 pymongo
+contextlib
+logging
