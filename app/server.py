@@ -11,6 +11,7 @@ async def connectToDatabase():
     print(db)
     return db
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     dbHost = await connectToDatabase()
