@@ -5,3 +5,8 @@ motor
 pymongo
 contextlib
 logging
+passlib
+cryptography
+openpyxl
+python-jose
+bcrypt
