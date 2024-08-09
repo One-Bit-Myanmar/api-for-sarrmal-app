@@ -9,7 +9,7 @@ MONGO_CONNECTION_STRING = "<YOUR_ACTUAL_CONNECTION_STRING>"
 
 Application Structure
 
-```mermaid
+```
 /app
     /models/*
     server.py
@@ -24,6 +24,14 @@ requirements.txt
 Run the application
 ```shell
 uvicorn server:app --reload --port 8000
+```
+
+**If you encountered an error wnile running just type the following command**
+
+```shell
+
+set PYTHONPATH=%PYTHONPATH%;C:\Users\acer\Desktop\Development\fastapi
+
 ```
 
 ### Reference
