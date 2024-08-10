@@ -20,11 +20,12 @@ router = APIRouter()
 client = connectToDatabase()
 db = client['Cluster0']
 users_collection = db["users"]
+sessions_collection = db["sessions"]
 
 # get all user
 @router.get("/get")
-def get_user(request: Request) -> list[User]:
-    db = request.app.users
+def get_user() -> list[User]:
+    db = users_collection
     response = list(db.find({}))
     for item in response:
         item["_id"] = str(item["_id"])
@@ -35,7 +36,6 @@ async def register_user(user: User):
     existing_user = users_collection.find_one({"email": user.email})
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
-    
     hashed_password = Hash.bcrypt(user.password)
     user_document = {
         "username": user.username,
@@ -44,7 +44,6 @@ async def register_user(user: User):
         "created_at": user.created_at,
         "updated_at": user.updated_at,
     }
-    
     users_collection.insert_one(user_document)
     return {"message": "User created successfully"}
 
@@ -53,20 +52,24 @@ async def register_user(user: User):
 # User login
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    username = form_data.username
+    email = form_data.username # get email
     password = form_data.password 
 
-    if not verify_password(username, password):
+    if not verify_password(email, password):
         raise HTTPException(status_code=401, detail="Incorrect username or password")
-    access_token = create_access_token(data={"sub": username})
-
+    access_token = create_access_token(data={"sub": email})
+    # insert into session db
+    session_doc = {
+        "email": email,
+        "access_token": access_token,
+    }
+    sessions_collection.insert_one(session_doc)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 
-
-def verify_password(username: str, password: str) -> bool:
-    user = users_collection.find_one({"username": username})
+def verify_password(email: str, password: str) -> bool:
+    user = users_collection.find_one({"email": email})
     print(user)
     if not user:
         return False
