@@ -14,7 +14,7 @@ class User(BaseModel):
     diseases: list[str]
     allergies: list[str]
     gender: int
-    exercise: str
+    exercises: str
     goals: list[str]
     preferred_foods: list[str]
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -26,3 +26,13 @@ class User(BaseModel):
     def save(self, update: bool = False):
         if update:
             self.updated_at = datetime.utcnow()
+
+class HistoryItem(BaseModel):
+    request: str
+    response: str
+    date_times: list[datetime]
+
+class FoodRequest(BaseModel):
+    id: str
+    user_id: str
+    history: list[HistoryItem]
