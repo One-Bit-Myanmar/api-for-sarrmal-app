@@ -22,3 +22,13 @@ class Food(BaseModel):
         if update:
             self.updated_at = datetime.utcnow()
     
+class FoodItem(BaseModel):
+    id: str
+    name: str
+    category: str
+    ingredients: list[str]
+    calories: int
+    food_allergies: list[str]
+    how_to_cook: str
+    img: str
+    best_time_to_eat: list[str]

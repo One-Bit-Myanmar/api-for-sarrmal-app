@@ -2,21 +2,11 @@ from pydantic import BaseModel, Field, validator
 from typing import Optional
 from datetime import datetime
 
-class User(BaseModel):
+class Food_history(BaseModel):
+    food_history_id: str
+    food_id: str
     user_id: str
-    username: str
-    email: str
-    password: str
-    weight: float
-    height: float
-    bmi: float
-    age: int
-    diseases: list[str]
-    allergies: list[str]
-    gender: int
-    exercises: str
-    goals: list[str]
-    preferred_foods: list[str]
+    calories: int
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
@@ -27,12 +17,13 @@ class User(BaseModel):
         if update:
             self.updated_at = datetime.utcnow()
 
-class HistoryItem(BaseModel):
-    request: str
-    response: str
-    date_times: list[datetime]
 
-class FoodRequest(BaseModel):
+class FoodHistoryItem(BaseModel):
+    datetime: datetime
+    foodID: int
+    calories: int
+
+class UserFoodHistory(BaseModel):
     id: str
-    user_id: str
-    history: list[HistoryItem]
+    userid: str
+    food_history: list[FoodHistoryItem]
