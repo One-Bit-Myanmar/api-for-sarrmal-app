@@ -13,9 +13,11 @@
 git clone https://github.com/Hein-HtetSan/api-for-sarrmal-app.git
 ```
 
-Copy the .env.example as .env
-```git
-cp .env.example .env
+Create **env dir** and **credentials.env**
+```shell
+mkdir env
+cd env
+touch credentials.env
 ```
 
 2. Create a Virtual Environment
@@ -120,35 +122,40 @@ your_app/
 - flake8: For checking the style and quality of your code.
 - black: Code formatter.
 
-Project Structure Breakdown
-your_app/:
+### Project Structure Breakdown
+
+> your_app/:
 
 The root directory of your FastAPI project.
-venv/:
+
+> venv/:
 
 Virtual environment directory containing all the dependencies and packages installed for this project.
-app/:
+
+> app/:
 
 Main application directory containing the core components of your FastAPI project.
 
-__init__.py:
+> __init__.py:
 
 Marks the app directory as a Python package.
 main.py:
 
 The entry point of the FastAPI application where the app is initialized and routes are included.
-api/:
+
+> api/:
 
 Contains the API-related modules and routing.
 
-__init__.py:
+> __init__.py:
 
 Marks the api directory as a Python package.
-endpoints/:
+
+> endpoints/:
 
 Contains individual API endpoints or routes for different functionalities.
 
-__init__.py:
+> __init__.py:
 
 Marks the endpoints directory as a Python package.
 recommendations.py:
@@ -160,11 +167,12 @@ API endpoints related to user management, such as registration, login, and profi
 foods.py:
 
 API endpoints related to managing food items in the database.
-core/:
+
+> core/:
 
 Core functionalities and configurations of the application.
 
-__init__.py:
+> __init__.py:
 
 Marks the core directory as a Python package.
 config.py:
@@ -173,21 +181,23 @@ Application configuration settings, including environment variables and database
 security.py:
 
 Security-related functions, such as password hashing, JWT token creation, and authentication.
-db/:
+
+> db/:
 
 Database-related modules and models.
 
-__init__.py:
+> __init__.py:
 
 Marks the db directory as a Python package.
 mongodb.py:
 
 MongoDB connection and database handling logic.
-models/:
+
+> models/:
 
 Contains database models that define the structure of data in MongoDB.
 
-__init__.py:
+> __init__.py:
 
 Marks the models directory as a Python package.
 user.py:
@@ -196,21 +206,23 @@ Database model representing a user in the system.
 food.py:
 
 Database model representing a food item in the system.
-models/:
+
+> models/:
 
 Contains machine learning models or any other business-related models.
 
-__init__.py:
+> __init__.py:
 
 Marks the models directory as a Python package.
 recommendation_model.py:
 
 Handles loading and using the machine learning model for food recommendations.
-schemas/:
+
+> schemas/:
 
 Pydantic models (schemas) used for data validation and serialization.
 
-__init__.py:
+> __init__.py:
 
 Marks the schemas directory as a Python package.
 user.py:
@@ -222,11 +234,12 @@ Schemas for food-related data validation.
 recommendation.py:
 
 Schemas for recommendation-related data validation.
-services/:
+
+> services/:
 
 Business logic and services that interact with the database and models.
 
-__init__.py:
+> __init__.py:
 
 Marks the services directory as a Python package.
 recommendation_service.py:
@@ -235,21 +248,23 @@ Business logic for generating and managing food recommendations.
 user_service.py:
 
 Business logic for managing users.
-utils/:
+
+> utils/:
 
 Utility functions and common helpers used across the application.
 
-__init__.py:
+> __init__.py:
 
 Marks the utils directory as a Python package.
 common.py:
 
 Common utility functions used throughout the application.
-tests/:
+
+> tests/:
 
 Test cases for the application, ensuring all features work as expected.
 
-__init__.py:
+> __init__.py:
 
 Marks the tests directory as a Python package.
 test_recommendations.py:
@@ -261,20 +276,24 @@ Test cases for user-related functionality.
 test_foods.py:
 
 Test cases for food-related functionality.
-data/:
+
+> data/:
 
 Directory for storing datasets and trained models.
 
-raw/:
+> raw/:
 
 Raw, unprocessed data files.
-processed/:
+
+> processed/:
 
 Processed data files ready for use in model training.
-trained_model/:
+
+> trained_model/:
 
 Contains trained machine learning models, like model.joblib.
-notebooks/:
+
+> notebooks/:
 
 Jupyter notebooks for data analysis, preprocessing, and model training.
 
@@ -284,12 +303,15 @@ Notebook for data preprocessing.
 model_training.ipynb:
 
 Notebook for training the machine learning model.
-requirements.txt:
+
+> requirements.txt:
 
 Lists all the Python packages required for the project.
-.env:
+
+> .env:
 
 Environment variables, such as database connection strings and secret keys.
-README.md:
+
+> README.md:
 
 Project documentation providing an overview of the application, how to set it up, and how to use it.
