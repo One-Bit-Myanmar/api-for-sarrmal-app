@@ -4,15 +4,29 @@ import uvicorn
 
 # get configured env values
 from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE
+from app.db.mongodb import get_db
 
+# from middleware modules
+from app.api.middleware.SlowAPIRateLimiting import limiter, _rate_limit_exceeded_handler
+
+# include router here
+from app.api.endpoints.users import router as UserRouter
 
 app = FastAPI()
 
+# get database config method is here
+db = get_db()
+
 # for cors middleware /// aka default middleware
+
+# rate limiting middleware
+app.state.limiter = limiter
+app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 # include the middleware here
 
 # for routes from app.api.endpoints /// include the routes here
+app.include_router(UserRouter, tags=["User"], prefix="/api/user") # user route
 
 
 # calling root directory
