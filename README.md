@@ -13,9 +13,11 @@
 git clone https://github.com/Hein-HtetSan/api-for-sarrmal-app.git
 ```
 
-Copy the .env.example as .env
-```git
-cp .env.example .env
+Create **env dir** and **credentials.env**
+```shell
+mkdir env
+cd env
+touch credentials.env
 ```
 
 2. Create a Virtual Environment
