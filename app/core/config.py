@@ -14,4 +14,4 @@ DEBUG = ENV_VALUE.get("DEBUG", "False") # provide default value is not set
 # get connection
 def connect_to_database():
     client = MongoClient(CONNECTION_STRING)
-    return client # return mongoDB client
+    return client
