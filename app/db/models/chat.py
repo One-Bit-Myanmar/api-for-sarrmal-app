@@ -5,7 +5,7 @@ from datetime import datetime
 class Chat(BaseModel):
     chat_id: int
     user_id: str
-    date: datetime
+    date: datetime = Field(default_factory=datetime.utcnow)
     message: str
     response: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -17,3 +17,13 @@ class Chat(BaseModel):
     def save(self, update: bool = False):
         if update:
             self.updated_at = datetime.utcnow()
+            
+# user request model to make an api request to open ai chat bot
+class RequestModel(BaseModel):
+    user_id: str
+    message: str
+
+# for the user message editing
+class ChatUpdateModel(BaseModel):
+    user_id: str
+    message: str
