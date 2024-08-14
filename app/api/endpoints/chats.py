@@ -45,7 +45,7 @@ async def get_chat(chat_id: str):
     
     
 # edit and update the user request
-@router.put("/chat/{chat_id}")
+@router.put("/chat/{chat_id}", response_model=dict)
 async def update_chat(chat_id: str, request_msg: RequestModel):
     # find the chat
     chat = chat_collection.find_one({"chat_id": chat_id})
@@ -72,7 +72,7 @@ async def update_chat(chat_id: str, request_msg: RequestModel):
 
 
 # get the chat history by user id
-@router.get('/chat/history/{user_id}')
+@router.get('/chat/history/{user_id}', response_model=dict)
 async def get_chat_history(user_id: int) -> list[Chat]:
     # get the start fo day and end of day
     start_of_today = datetime.combine(datetime.today(), datetime.min.time())
