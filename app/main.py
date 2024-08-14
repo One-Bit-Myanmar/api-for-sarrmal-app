@@ -11,6 +11,7 @@ from app.api.middleware.SlowAPIRateLimiting import limiter, _rate_limit_exceeded
 
 # include router here
 from app.api.endpoints.users import router as UserRouter
+from app.api.endpoints.chats import router as ChatRouter
 
 app = FastAPI()
 
@@ -27,6 +28,7 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 # for routes from app.api.endpoints /// include the routes here
 app.include_router(UserRouter, tags=["User"], prefix="/api/user") # user route
+app.include_router(ChatRouter, tags=["Chat"], prefix="/api/chat")
 
 
 # calling root directory
