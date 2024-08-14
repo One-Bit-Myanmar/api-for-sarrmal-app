@@ -12,6 +12,8 @@ from app.api.middleware.SlowAPIRateLimiting import limiter, _rate_limit_exceeded
 # include router here
 from app.api.endpoints.users import router as UserRouter
 from app.api.endpoints.chats import router as ChatRouter
+from app.api.endpoints.foods import router as FoodRouter
+from app.api.endpoints.food_histories import router as FoodHistoryRouter
 
 app = FastAPI()
 
@@ -28,8 +30,9 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 # for routes from app.api.endpoints /// include the routes here
 app.include_router(UserRouter, tags=["User"], prefix="/api/user") # user route
-app.include_router(ChatRouter, tags=["Chat"], prefix="/api/chat")
-
+app.include_router(ChatRouter, tags=["Chat"], prefix="/api/ai") # chat route
+app.include_router(FoodRouter, tags=["Food"], prefix="/api/food") # food router
+app.include_router(FoodHistoryRouter, tags=["Food History"], prefix="/api/food-history") # food history route
 
 # calling root directory
 @app.get("/", tags=["Root"])
