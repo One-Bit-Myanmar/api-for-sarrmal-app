@@ -10,8 +10,8 @@ from app.db.models.Chat import Chat, RequestModel # import the user model
 # database connection setup
 db = connect_to_database()
 db = db["food_recommendation_database"] # database name
-chat_collection = db["chats"] # chat table inside food_recommendation_database
-user_collection = db["users"] # user table inside food_recommendation_database
+chat_collection: Collection = db["chats"] # chat table inside food_recommendation_database
+user_collection: Collection = db["users"] # user table inside food_recommendation_database
 
 router = APIRouter()
 
