@@ -1,12 +1,10 @@
-from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi import APIRouter
 from pymongo.collection import Collection
-from app.core.security import Hash, create_access_token, verify_token
 from datetime import datetime, timedelta
-from fastapi.security import OAuth2PasswordRequestForm
 from app.core.config import connect_to_database
 
 # get the database 
-from app.db.mongodb import get_db
+from app.db.mongodb import get_db # get the database dependency
 from app.db.models.Chat import Chat, RequestModel # import the user model
 
 db = connect_to_database()
