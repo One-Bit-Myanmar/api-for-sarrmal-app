@@ -26,7 +26,7 @@ def get_users():
     for item in users:
         item["_id"] = str(item["_id"])
     # return users
-    return users
+    return {"response": users}
 
 # get specific users
 @router.get('/get/{user_id}')
@@ -36,7 +36,7 @@ def get_user(user_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     user["_id"] = str(user["_id"])  # Convert ObjectId to string
-    return user
+    return {"response": user}
 
 
 # register user
