@@ -1,11 +1,16 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pymongo.collection import Collection
 from datetime import datetime, timedelta
 from app.core.config import connect_to_database
 from typing import List
+
+# import slowapi modules
+from app.api.middleware.rate_limiter import limiter
+
 # get the database 
 from app.db.mongodb import get_db # get the database dependency
 from app.db.models.Chat import Chat, RequestModel # import the user model
+
 
 # database connection setup
 db = connect_to_database()
@@ -15,9 +20,11 @@ user_collection: Collection = db["users"] # user table inside food_recommendatio
 
 router = APIRouter()
 
+
 # chat with ai
 @router.post("/chat", response_model=dict)
-async def chat_ai(chat: Chat, user_id: int):
+@limiter.limit("5/minute")
+async def chat_ai(request: Request, chat: Chat, user_id: int):
     # check user is exist or not
     user = user_collection.find_one({"user_id": user_id})
     if not user:
@@ -36,7 +43,8 @@ async def chat_ai(chat: Chat, user_id: int):
 
 # get the specific chat
 @router.get("/chat/{chat_id}", response_model=dict)
-async def get_chat(chat_id: str):
+@limiter.limit("5/minute")
+async def get_chat(request: Request, chat_id: str):
     chat = chat_collection.find_one({"chat_id": chat_id})
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
@@ -46,7 +54,8 @@ async def get_chat(chat_id: str):
     
 # edit and update the user request
 @router.put("/chat/{chat_id}", response_model=dict)
-async def update_chat(chat_id: str, request_msg: RequestModel):
+@limiter.limit("5/minute")
+async def update_chat(request: Request, chat_id: str, request_msg: RequestModel):
     # find the chat
     chat = chat_collection.find_one({"chat_id": chat_id})
     if not chat:
@@ -73,7 +82,8 @@ async def update_chat(chat_id: str, request_msg: RequestModel):
 
 # get the chat history by user id
 @router.get('/chat/history/{user_id}', response_model=dict)
-async def get_chat_history(user_id: int) -> list[Chat]:
+@limiter.limit("5/minute")
+async def get_chat_history(request: Request, user_id: int) -> list[Chat]:
     # get the start fo day and end of day
     start_of_today = datetime.combine(datetime.today(), datetime.min.time())
     start_of_tomorrow = start_of_today + timedelta(days=1)
