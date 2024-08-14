@@ -15,3 +15,5 @@ slowapi
 fastapi-limiter
 limits
 aioredits
+
+Pillow
