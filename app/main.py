@@ -1,13 +1,13 @@
 from fastapi import FastAPI, HTTPException, Depends, Request
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from typing import Callable
 import uvicorn
 
 # get configured env values
 from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE
 from app.db.mongodb import get_db
-
-# from middleware modules
-from app.api.middleware.SlowAPIRateLimiting import limiter, _rate_limit_exceeded_handler
 
 # include router here
 from app.api.endpoints.users import router as UserRouter
@@ -15,18 +15,27 @@ from app.api.endpoints.chats import router as ChatRouter
 from app.api.endpoints.foods import router as FoodRouter
 from app.api.endpoints.food_histories import router as FoodHistoryRouter
 
+# include middleware are herer
+from app.api.middleware.rate_limiter import add_rate_limit
+from app.api.middleware.auth_middleware import AuthMiddleware
+
 app = FastAPI()
 
 # get database config method is here
 db = get_db()
 
 # for cors middleware /// aka default middleware
-
-# rate limiting middleware
-app.state.limiter = limiter
-app.add_exception_handler(429, _rate_limit_exceeded_handler)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://localhost"],  # Restrict to specific domains
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # include the middleware here
+add_rate_limit(app) # this is the api call rate limiting middlewaer
+app.add_middleware(AuthMiddleware) # this is auth middleware 
 
 # for routes from app.api.endpoints /// include the routes here
 app.include_router(UserRouter, tags=["User"], prefix="/api/user") # user route

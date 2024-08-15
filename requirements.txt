@@ -10,10 +10,8 @@ pytest
 httpx
 flake8
 black
-
 slowapi
 fastapi-limiter
 limits
 aioredits
-
 Pillow
