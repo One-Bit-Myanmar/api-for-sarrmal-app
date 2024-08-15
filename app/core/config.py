@@ -11,6 +11,9 @@ RELOAD_STATE = ENV_VALUE["RELOAD_STATE"]
 
 DEBUG = ENV_VALUE.get("DEBUG", "False") # provide default value is not set
 
+SECRET_KEY = ENV_VALUE["SECRET_KEY"]
+ALGORITHM = ENV_VALUE["ALGORITHM"]
+
 # get connection
 def connect_to_database():
     client = MongoClient(CONNECTION_STRING)
