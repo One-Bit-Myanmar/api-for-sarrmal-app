@@ -6,6 +6,10 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 from typing import List
+import json
+
+# imoprt the trained model by api
+from app.models.food import get_calories_from_img 
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
@@ -55,17 +59,16 @@ async def tick_taken_food(request: Request, food_id: str):
 
 
 # get the food calores
-@router.get("/get/calories", response_model=dict)
+@router.post("/get/calories", response_model=dict)
 @limiter.limit("5/minute")
 async def get_food_calories_from_image(request: Request, file: UploadFile = File(...)):
     """extract food calories from an uploaded image using a predict"""
     try:
         # Read the uploaded image file
         image = Image.open(BytesIO(await file.read()))
-        
         # use model to predict the food ID from the image
-        
-        # return the food calories
-        
+        response = get_calories_from_img(image)
+        # Convert the string to a Python dictionary
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
