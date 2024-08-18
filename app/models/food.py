@@ -41,11 +41,18 @@ def get_calories_from_img(image: Image.Image):
         # Extract the JSON string
         json_string = match.group(1)
         # Convert the string to a Python dictionary
-        return json_string
+        print(json_string)
+        try:
+            # Convert the string to a proper Python dictionary
+            json_dict = json.loads(json_string)
+            return json_dict
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Failed to decode JSON: {str(e)}")
     else:
         raise ValueError("No JSON-like content found in the response.")
     
-    
+
+# clean the text file and return json file
 def clean_and_convert_to_json(response_str):
     try:
         # Convert the string to a proper JSON object
