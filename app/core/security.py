@@ -73,7 +73,7 @@ async def get_current_user(
     
     try:
         print(f"Received token: {token}")  # Debug: Print received token
-        payload = verify_token(token, SECRET_KEY, algorithms=[ALGORITHM]) # to decode the token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # to decode the token
         print(f"Decoded payload: {payload}")  # Debug: Print decoded payload
         # the key is "sub" which have been encoded while user login
         # then save to variable --> email as a String and save to Token data Model
