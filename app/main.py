@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from typing import Callable
-from fastapi.security import OAuth2PasswordBearer
 import uvicorn
 
 # get configured env values
@@ -37,7 +36,6 @@ app.add_middleware(
 
 # include the middleware here
 add_rate_limit(app) # this is the api call rate limiting middlewaer
-# app.add_middleware(AuthMiddleware) # this is auth middleware 
 
 # for routes from app.api.endpoints /// include the routes here
 app.include_router(UserRouter, tags=["User"], prefix="/api/user") # user route
