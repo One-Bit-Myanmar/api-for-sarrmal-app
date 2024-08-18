@@ -29,6 +29,6 @@ class FoodItem(BaseModel):
     ingredients: list[str]
     calories: int
     food_allergies: list[str]
-    how_to_cook: str
-    img: str
+    url_to_how_to_cook: str
+    image: str
     best_time_to_eat: list[str]

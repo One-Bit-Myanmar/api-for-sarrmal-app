@@ -18,6 +18,7 @@ class User(BaseModel):
     gender: int
     exercises: str
     goals: list[str]
+    disabled: Optional[bool] = None
     preferred_foods: Optional[List[str]] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -29,6 +30,12 @@ class User(BaseModel):
     def save(self, update: bool = False):
         if update:
             self.updated_at = datetime.utcnow()
+            
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {
+            ObjectId: str  # To handle ObjectId serialization
+        }
             
 class UserUpdateModel(BaseModel):
     username: Optional[str]
@@ -42,6 +49,8 @@ class UserUpdateModel(BaseModel):
     goals: list[str]
     preferred_foods: Optional[List[str]] = Field(default_factory=list)
 
+    
+
 class HistoryItem(BaseModel):
     request: str
     response: str
@@ -51,3 +60,18 @@ class FoodRequest(BaseModel):
     id: str
     user_id: str
     history: list[HistoryItem]
+    
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    
+class TokenData(BaseModel):
+    email: str
+    
+
+class UserInDB(User):
+    password: str
