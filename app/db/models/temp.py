@@ -2,7 +2,8 @@ from pydantic import BaseModel, Field, validator
 from typing import Optional
 from datetime import datetime
 
-class Temp(BaseModel):
+class TempFood(BaseModel):
+    temp_food_id: str
     user_id: str
     name: str
     category: str
@@ -21,7 +22,7 @@ class Temp(BaseModel):
     def save(self, update: bool = False):
         if update:
             self.updated_at = datetime.utcnow()
-class FoodItem(BaseModel):
+class TempFoodItem(BaseModel):
     name: str
     category: str
     ingredients: list[str]
