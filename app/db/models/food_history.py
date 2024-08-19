@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import datetime
 
 class Food_history(BaseModel):
-    food_history_id: str
     food_id: str
     user_id: str
     calories: int
@@ -19,10 +18,9 @@ class Food_history(BaseModel):
 
 
 class FoodHistoryItem(BaseModel):
-    datetime: datetime
     food_id: str
     calories: int
 
 class UserFoodHistory(BaseModel):
     user_id: str
-    food_history: list[FoodHistoryItem]
+    food_id: str
