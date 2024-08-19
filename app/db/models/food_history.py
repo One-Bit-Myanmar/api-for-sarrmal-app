@@ -20,10 +20,9 @@ class Food_history(BaseModel):
 
 class FoodHistoryItem(BaseModel):
     datetime: datetime
-    foodID: int
+    food_id: str
     calories: int
 
 class UserFoodHistory(BaseModel):
-    id: str
-    userid: str
+    user_id: str
     food_history: list[FoodHistoryItem]

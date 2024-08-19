@@ -5,7 +5,6 @@ from datetime import datetime
 
 
 class User(BaseModel):
-    user_id: str
     username: str
     email: str
     password: str
@@ -32,10 +31,8 @@ class User(BaseModel):
             self.updated_at = datetime.utcnow()
             
     class Config:
-        arbitrary_types_allowed = True
-        json_encoders = {
-            ObjectId: str  # To handle ObjectId serialization
-        }
+        orm_mode = True
+        json_encoders = {ObjectId: str}
             
 class UserUpdateModel(BaseModel):
     username: Optional[str]
@@ -72,6 +69,5 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: str
     
-
 class UserInDB(User):
     password: str
