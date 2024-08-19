@@ -5,7 +5,7 @@ from app.core.config import SECRET_KEY, ALGORITHM
 from typing import Optional
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from app.db.models.User import Token, TokenData, UserInDB, User
+from app.db.models.user import Token, TokenData, UserInDB, User
 import jwt
 from jose import JWTError
 from app.db.mongodb import connect_to_database # connect to data fun will get db connection

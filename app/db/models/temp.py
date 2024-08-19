@@ -2,7 +2,8 @@ from pydantic import BaseModel, Field, validator
 from typing import Optional
 from datetime import datetime
 
-class Food(BaseModel):
+class Temp(BaseModel):
+    user_id: str
     name: str
     category: str
     ingredients: list[str]

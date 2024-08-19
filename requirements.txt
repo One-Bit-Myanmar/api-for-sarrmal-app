@@ -13,6 +13,10 @@ black
 slowapi
 fastapi-limiter
 limits
-aioredits
+aioredis
 Pillow
-fastapi_auth_middlewares
+fastapi-auth-middleware
+passlib
+PyJWT
+python-multipart
+google-generativeai

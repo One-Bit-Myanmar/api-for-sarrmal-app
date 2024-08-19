@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List
 from app.core.config import connect_to_database
 from app.db.mongodb import get_db
-from app.db.models.Food_History import FoodHistoryItem, UserFoodHistory
+from app.db.models.food_history import FoodHistoryItem, UserFoodHistory
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
