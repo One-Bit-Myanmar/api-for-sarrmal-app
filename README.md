@@ -6,6 +6,12 @@
 - sample-api: testing fastapi, just pure
 - api-with-mongodb: testing with mongodb database
 
+**Run the docker container**
+
+```shell
+docker-compose up -d
+```
+
 
 1. Clone the repo
 
