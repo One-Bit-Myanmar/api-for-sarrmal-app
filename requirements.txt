@@ -16,3 +16,7 @@ limits
 aioredis
 Pillow
 fastapi-auth-middleware
+passlib
+PyJWT
+python-multipart
+google-generativeai

@@ -10,8 +10,8 @@ from app.api.middleware.rate_limiter import limiter
 
 # get the database 
 from app.db.mongodb import get_db # get the database dependency
-from app.db.models.Chat import Chat, RequestModel, ResponseModel # import the user model
-from app.db.models.User import User
+from app.db.models.chat import Chat, RequestModel, ResponseModel # import the user model
+from app.db.models.user import User
 from app.core.security import get_current_active_user
 
 # add chat model

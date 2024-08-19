@@ -4,7 +4,7 @@ from app.core.security import Hash, create_access_token, verify_token, get_curre
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from app.core.config import connect_to_database
-from app.db.models.User import User, UserUpdateModel
+from app.db.models.user import User, UserUpdateModel
 from app.core.config import connect_to_database, SECRET_KEY, ALGORITHM
 from bson import ObjectId
 
