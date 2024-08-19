@@ -13,7 +13,7 @@ from app.api.middleware.rate_limiter import limiter
 
 # get the database 
 from app.db.mongodb import get_db # get the database dependency
-from app.db.models.food import Food, FoodItem # import the user model
+from app.db.models.temp import TempFood, TempFoodItem # import the user model
 from app.db.models.user import User # get the user model to use authentication with current active user
 
 # add for auth middleware
