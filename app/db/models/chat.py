@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import datetime
 
 class Chat(BaseModel):
-    chat_id: int
     user_id: str
     date: datetime = Field(default_factory=datetime.utcnow)
     message: str
@@ -20,10 +19,8 @@ class Chat(BaseModel):
             
 # user request model to make an api request to open ai chat bot
 class RequestModel(BaseModel):
-    user_id: str
     message: str
 
 # for the user message editing
-class ChatUpdateModel(BaseModel):
-    user_id: str
-    message: str
+class ResponseModel(BaseModel):
+    response: str

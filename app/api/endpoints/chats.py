@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pymongo.collection import Collection
 from datetime import datetime, timedelta
 from app.core.config import connect_to_database
@@ -9,8 +9,12 @@ from app.api.middleware.rate_limiter import limiter
 
 # get the database 
 from app.db.mongodb import get_db # get the database dependency
-from app.db.models.Chat import Chat, RequestModel # import the user model
+from app.db.models.Chat import Chat, RequestModel, ResponseModel # import the user model
+from app.db.models.User import User
+from app.core.security import get_current_active_user
 
+# add chat model
+from app.models.chat_model import generate_response
 
 # database connection setup
 db = connect_to_database()
@@ -24,21 +28,27 @@ router = APIRouter()
 # chat with ai
 @router.post("/chat", response_model=dict)
 @limiter.limit("5/minute")
-async def chat_ai(request: Request, chat: Chat, user_id: int):
+async def chat_ai(
+    request: Request,
+    req_msg: RequestModel,
+    current_user: User = Depends(get_current_active_user)
+    ):
     # check user is exist or not
-    user = user_collection.find_one({"user_id": user_id})
+    user = user_collection.find_one({"user_id": current_user["user_id"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-    # sent to open ai layer
     # get response from open ai layer
-    
+    response = generate_response(req_msg.message)
+    # create chat dict to save in database
+    chat_dict = {
+        "user_id": str,
+        "message": req_msg.message,
+        "response": response
+    }
     # save to database
-    chat_data = chat.dict()
-    chat_data["datetime"] = datetime.utcnow()
-    chat_collection.insert_one(chat_data)
-    
-    return {"message": "Chat created successfully", "response": chat_data}
+    chat_collection.insert_one(chat_dict)
+    # return 
+    return {"response": "success", "data": chat_dict}
     
 
 # get the specific chat
