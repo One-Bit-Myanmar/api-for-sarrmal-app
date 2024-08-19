@@ -20,7 +20,6 @@ class Food(BaseModel):
     def save(self, update: bool = False):
         if update:
             self.updated_at = datetime.utcnow()
-    
 class FoodItem(BaseModel):
     name: str
     category: str
