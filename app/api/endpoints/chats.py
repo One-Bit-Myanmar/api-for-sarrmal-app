@@ -39,8 +39,8 @@ async def chat_ai(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     # # get response from open ai layer
-    response = "temp response from AI"
-    # # response = generate_response(req_msg.message)
+    # response = "temp response from AI"
+    response = generate_response(req_msg.message)
     # # create chat dict to save in database
     chat_dict = {
         "user_id": str(current_user["_id"]),
@@ -94,7 +94,8 @@ async def update_chat(
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     # get response from open ai api
-    response = "updated response"
+    # response = "updated response"
+    response = generate_response(request_msg.message)
     # update to database
     chat_collection.update_one(
         {"_id": ObjectId(chat_id)}, 
