@@ -19,7 +19,6 @@ from app.db.models.User import User # get the user model to use authentication w
 # add for auth middleware
 from app.core.security import get_current_active_user
 
-
 # get database connection
 db = connect_to_database()
 db = db["food_recommendation_database"] # database name
@@ -29,10 +28,13 @@ user_collection: Collection = db["users"] # user table inside food_recommendatio
 # init the api router
 router = APIRouter()
 
+
+
+
 # get 3 set of meals (breakfast, lunch, dinner) by user perferences 
-@router.get("/get/recommendations/perferences", response_model=List[FoodItem])
-@limiter.limit("5/minute")
-async def get_recommended_foods(
+@router.get("/get/recommended/breakfast")
+@limiter.limit("5/minute") # rate limiting middleware
+async def get_preference_foods(
     request: Request, # without this limiter not work
     current_user: User = Depends(get_current_active_user) # for active user
     ):
@@ -40,10 +42,19 @@ async def get_recommended_foods(
     pass
 
 
+# get 3 set of meals (breakfast, lunch, dinner) by user perferences 
+@router.get("/get/recommended/lunch")
+@limiter.limit("5/minute") # rate limiting middleware
+async def get_preference_foods(
+    request: Request, # without this limiter not work
+    current_user: User = Depends(get_current_active_user) # for active user
+    ):
+    """function to get recommended foods based on user perferences"""
+    pass
 
 
 # get 3 set of meals by user health
-@router.get("/get/recommendations/health", response_model=List[FoodItem])
+@router.get("/get/recommended/dinner")
 @limiter.limit("5/minute")
 async def get_healthy_foods(
     request: Request, # without this limiter not work
@@ -92,9 +103,8 @@ async def tick_taken_food(
 async def get_food_calories_from_image(
     request: Request, # without limiter not work
     file: UploadFile = File(...), # for upload file
-    current_user: User = Depends(get_current_active_user) # for user auth
+    # current_user: User = Depends(get_current_active_user) # for user auth
     ):
-    
     try:
         # Read the uploaded image file
         image = Image.open(BytesIO(await file.read()))
