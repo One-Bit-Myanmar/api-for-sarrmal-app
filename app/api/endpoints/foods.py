@@ -6,7 +6,7 @@ from PIL import Image
 from typing import List
 
 # imoprt the trained model by api
-from app.models.food import get_calories_from_img 
+from app.models.food_model import get_calories_from_img 
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter

@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import datetime
 
 class Food(BaseModel):
-    food_id: str
     name: str
     category: str
     ingredients: list[str]
@@ -23,7 +22,6 @@ class Food(BaseModel):
             self.updated_at = datetime.utcnow()
     
 class FoodItem(BaseModel):
-    id: str
     name: str
     category: str
     ingredients: list[str]
