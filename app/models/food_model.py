@@ -27,8 +27,8 @@ def get_calories_from_img(image: Image.Image):
         "name": str,
         "ingredients": list[str],
         "url_to_how_to_cook": str,
-        "image": str,
-        "best_time_to_eat": list[str],
+        "image_url": str,
+        "meal_time": str,
         }, 
         so that i can use in my fastapi 
         response route""",
