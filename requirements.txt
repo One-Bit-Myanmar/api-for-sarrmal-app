@@ -20,3 +20,4 @@ passlib
 PyJWT
 python-multipart
 google-generativeai
+pymongo

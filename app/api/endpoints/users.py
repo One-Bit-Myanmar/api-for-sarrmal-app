@@ -167,7 +167,6 @@ async def login_user(
 
 
 
-
 # Delete a user account by someone
 @router.delete('/delete/{user_id}')
 @limiter.limit("5/minute")
@@ -234,8 +233,6 @@ async def logout(
         return {"response": "success", "message": "User signed out"}
     else:
         raise HTTPException(status_code=404, detail="User not found")
-
-
 
 
 
