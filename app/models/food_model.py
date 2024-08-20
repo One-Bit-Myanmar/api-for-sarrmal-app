@@ -22,14 +22,20 @@ def get_calories_from_img(image: Image.Image):
     response = GEMINI_PRO_1O5.generate_content([
         """what is the total calorie count? Give by the following format
         {
-        "calories": int,
-        "category": str,
-        "name": str,
-        "ingredients": list[str],
-        "url_to_how_to_cook": str,
-        "image_url": str,
-        "meal_time": str,
+            "name": str,
+            "calories": int,
+            "category": str,
+            "ingredients": list[str],
+            "url_to_how_to_cook": str,
+            "image_url": str,
+            "meal_time": str,
         }, 
+
+        if user can't provide the food image then you have to response like this
+        {
+            "message": "{your message is in here}"
+        }
+        
         so that i can use in my fastapi 
         response route""",
         image])
