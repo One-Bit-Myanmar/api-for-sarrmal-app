@@ -25,7 +25,6 @@ user_collection: Collection = db["users"] # user table inside food_recommendatio
 
 router = APIRouter()
 
-
 # chat with ai
 @router.post("/chat") # init router 
 @limiter.limit("5/minute") # rate limiting middleware
@@ -56,9 +55,6 @@ async def chat_ai(
         return {"response": "success", "data": response}
     else:
         raise HTTPException(status_code=401, detail="Failed to save database")
-    
-
-
 
 # get the specific chat
 @router.get("/chat/{chat_id}") # init router
@@ -77,8 +73,6 @@ async def get_chat(
         raise HTTPException(status_code=404, detail="Chat not found")
     return {"response": "success", "data": chat}
 
-    
-    
 # edit and update the user request
 @router.put("/chat/{chat_id}") # init router
 @limiter.limit("5/minute") # rate limiting middleware
@@ -110,10 +104,6 @@ async def update_chat(
     )
     # return
     return {"response": "success", "data": response}
-    
-
-
-
 
 # get the chat history by current user
 @router.get('/chat') # init route

@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class Food(BaseModel):
+    user_id: str
     name: str
     category: str
     ingredients: list[str]
