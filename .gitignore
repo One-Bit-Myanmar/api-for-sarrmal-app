@@ -1,4 +1,7 @@
 /venv
 /env
 SAMSUNG
-**/__pycache__/
+**/__pycache__/*
+__pycache__/*
+*/__pycache__/
+__pycache__/
