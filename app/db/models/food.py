@@ -6,12 +6,11 @@ class Food(BaseModel):
     user_id: str
     name: str
     category: str
-    ingredients: list[str]
     calories: int
-    food_allergies: list[str]
     url_to_how_to_cook: str
-    image: str
-    best_time_to_eat: list[str]
+    image_url: str
+    meal_time: str
+    status: int = Field(default=0)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
