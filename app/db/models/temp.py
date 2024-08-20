@@ -21,7 +21,7 @@ class TempFood(BaseModel):
         return v or datetime.utcnow()
     def save(self, update: bool = False):
         if update:
-            self.updated_at = datetime.utcnow()
+            self.updated_at = datetime.utcnow()        
 class TempFoodItem(BaseModel):
     name: str
     category: str
