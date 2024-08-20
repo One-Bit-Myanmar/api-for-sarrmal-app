@@ -4,12 +4,23 @@ services:
   mongodb:
     image: mongo:latest
     container_name: mongodb
+    restart: always
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo_data:/data/food_recommendation_database
+
+  fastapi:
+    build: .
+    container_name: fastapi
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
     environment:
-      MONGO_INITDB_DATABASE: food_recommendation_database
+      - MONGO_URI=mongodb://mongodb:27017/food_recommendation_database
+      - GEMINI_API=AIzaSyBrxMCNDnKxpSuWwAW4HF0vaWmq098Bw4Y
 
 volumes:
   mongo_data:

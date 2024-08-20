@@ -57,7 +57,7 @@ pip freeze > requirements.txt
 6. Project Structures
 
 ```
-your_app/
+app/
 ├── venv/                     # Virtual environment directory
 ├── app/
 │   ├── __init__.py
