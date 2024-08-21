@@ -4,7 +4,6 @@ from app.core.config import connect_to_database
 from typing import List
 from bson import ObjectId
 
-from data.food_sample_data import sample_list 
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
