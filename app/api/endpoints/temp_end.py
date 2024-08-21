@@ -35,8 +35,7 @@ async def get_recommended(
     current_user: User = Depends(get_current_active_user) # for active user like auth
     ):
     # get_recommend food from ai generate
-    # recommend_food_sets = get_recommended_foods() # this is main 
-    recommend_food_sets = sample_list
+    recommend_food_sets = get_recommended_foods() # this is main 
     # if foods set is not none
     if not recommend_food_sets:
         raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
