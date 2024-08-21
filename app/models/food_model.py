@@ -3,11 +3,11 @@ import google.generativeai as genai
 from PIL import Image
 import json
 
-# import gemini api key
-from app.core.config import GEMINI_KEY
+#import gemini api key
+#from app.core.config import GEMINI_KEY
 
-# config the genai to use
-genai.configure(api_key=GEMINI_KEY)
+#config the genai to use
+#genai.configure(api_key=GEMINI_KEY)
 
 # Gemini Pro Model
 GEMINI_PRO = genai.GenerativeModel('gemini-pro')
@@ -66,3 +66,34 @@ def clean_and_convert_to_json(response_str):
         return json_dict
     except json.JSONDecodeError as e:
         raise ValueError(f"Failed to decode JSON: {str(e)}")
+    
+
+# recommend food with Gemini AI and return json object of food
+def generate_food_suggestion(user_info: str):
+    try:
+        model = genai.GenerativeModel(model_name='tunedModels/food-suggestion-ai-v1-uss801z982xp')
+        print(genai.configure())
+        result = model.generate_content(user_info)
+        print(result.text)
+        response = json.loads(result.text)
+        return response
+    
+    except json.JSONDecoder as json_err:
+        pass
+
+    except Exception as e:
+        pass
+
+    return None
+
+# print(generate_food_suggestion(
+#     """{
+#   "weight": 60,
+#   "height": 165,
+#   "age": 25,
+#   "diseases": ["None"],
+#   "allergies": ["Peanuts"],
+#   "gender": "Female",
+#   "exercise": "High"
+# }"""
+# ))

@@ -2,11 +2,14 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from typing import Callable
 import uvicorn
+import requests, jwt
+
 
 # get configured env values
-from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE
+from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
 from app.db.mongodb import get_db
 
 # include router here
@@ -47,8 +50,34 @@ app.include_router(TempFoodRouter, tags=["Temporary Foods"], prefix="/api/temp/f
 
 # calling root directory
 @app.get("/", tags=["Root"])
-async def read_root():
+async def read_root(code: str = None):
+    if code:
+        token_url = "https://accounts.google.com/o/oauth2/token"
+        data = {
+            "code": code,
+            "client_id": GOOGLE_CLIENT_ID,
+            "client_secret": GOOGLE_CLIENT_SECRET,
+            "redirect_uri": GOOGLE_REDIRECT_URI,
+            "grant_type": "authorization_code",
+        }
+        response = requests.post(token_url, data=data)
+        print(response.text)
+        print()
+        access_token = response.json().get("access_token")
+        global GOOGLE_ACCESS_TOKEN
+        GOOGLE_ACCESS_TOKEN = response.json().get("access_token")
+        user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {access_token}"})
+        return access_token
     return {"message": "Welcome to food recommendation app"}
+
+@app.get("/login/google")
+async def login_google():
+    return {"abcd": 'abcd'}
+    
+
+# @app.get("/token")
+# async def get_token(token: str = Depends(oauth2_scheme)):
+#     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
 
 # main method to run the application ///// run api with command
 if __name__ == "__main__":
