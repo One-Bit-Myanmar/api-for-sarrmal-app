@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Request, Depends, UploadFile, File
+from fastapi.responses import JSONResponse
 from pymongo.collection import Collection
 from app.core.config import connect_to_database
 from app.db.models.user import User
@@ -62,7 +63,7 @@ async def get_confirmed_food_list(
 
 
 # get the food calories from user input aspecially from image
-@router.post("/get/calories", response_model=dict) # init the get calories from image route
+@router.post("/get/calories") # init the get calories from image route
 @limiter.limit("5/minute") # rate limiting middleware
 async def get_food_calories_from_image(
     request: Request, # without limiter not work
@@ -74,10 +75,12 @@ async def get_food_calories_from_image(
         image = Image.open(BytesIO(await file.read()))
         # use model to predict the food ID from the image
         response = get_calories_from_img(image)
-        # clean the temporary response list
-        response_list.clear()
-        # append into the temporary list for further use
-        response_list.append(response)
+        if response["message"] == None:
+            # clean the temporary response list
+            response_list.clear()
+            # append into the temporary list for further use
+            response_list.append(response)
+            print(response_list)
         # Convert the string to a Python dictionary
         return response
     except Exception as e:
@@ -95,6 +98,7 @@ async def save_generated_response_from_image(
     # check the list is empty or not
     if len(response_list) > 0:
         # add the food into food table from generated list
+        response_list[0]["user_id"] = str(current_user["_id"]) #insert user id to temporary response list
         if food_collection.insert_one(response_list[0]):
             # clear the list
             response_list.clear()
@@ -102,10 +106,10 @@ async def save_generated_response_from_image(
             return {"message": "Food added successfully", "response": "success"}
         else:
             # return that failed to add food
-            return {"message": "Failed to add food", "response": "failed"}
+            return {"message": "Failed to add food", "response": "fail"}
     else:
         # return that there is no food in list
-        return {"message": "No response to save", "response": "failed"}
+        return {"message": "No response to save", "response": "fail"}
     
 
     
