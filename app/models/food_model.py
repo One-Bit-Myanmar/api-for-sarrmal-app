@@ -20,8 +20,10 @@ PATTERN = r'```json\s*({.*?})\s*```'
 def get_calories_from_img(image: Image.Image):
     # generate the response 
     response = GEMINI_PRO_1O5.generate_content([
-        """what is the total calorie count? Give by the following format
-        {
+        """give me result by following format
+        - meal time must be time format like this "12:00 AM"
+        
+        ```json{
             "name": str,
             "calories": int,
             "category": str,
@@ -29,13 +31,12 @@ def get_calories_from_img(image: Image.Image):
             "url_to_how_to_cook": str,
             "image_url": str,
             "meal_time": str,
-        }, 
-
-        if user can't provide the food image then you have to response like this
-        {
-            "message": "{your message is in here}"
-        }
+        }```
         
+        if the image is not food then return the following format
+        ```json{
+            "message": "short message"
+        }```
         so that i can use in my fastapi 
         response route""",
         image])
