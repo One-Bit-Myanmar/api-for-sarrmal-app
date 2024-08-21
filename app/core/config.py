@@ -15,10 +15,9 @@ ALGORITHM = ENV_VALUE["ALGORITHM"]
 GEMINI_KEY = ENV_VALUE["GEMINI_KEY"]
 
 # using os
-MONGO_RUI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-GEMINI_KEY = os.getenv("GEMINI_KEY")
+
 
 # get connection
 def connect_to_database():
-    client = MongoClient(MONGO_RUI)
+    client = MongoClient(CONNECTION_STRING)
     return client
