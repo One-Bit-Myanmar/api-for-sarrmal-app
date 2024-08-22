@@ -11,7 +11,7 @@ class TempFood(BaseModel):
     calories: int
     url_to_how_to_cook: str
     image_url: str
-    meal_time: list[str]
+    meal_time: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     

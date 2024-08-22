@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Request, Depends
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pymongo.collection import Collection
 from app.core.config import connect_to_database
 from app.models.food_model import generate_food_suggestion
