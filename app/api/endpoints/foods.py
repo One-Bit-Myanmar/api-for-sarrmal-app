@@ -78,6 +78,8 @@ async def get_food_calories_from_image(
         if response["message"] == None:
             # clean the temporary response list
             response_list.clear()
+            # add user id to response json list
+            response["user_id"] = str(current_user["_id"])
             # append into the temporary list for further use
             response_list.append(response)
             print(response_list)
@@ -98,7 +100,6 @@ async def save_generated_response_from_image(
     # check the list is empty or not
     if len(response_list) > 0:
         # add the food into food table from generated list
-        response_list[0]["user_id"] = str(current_user["_id"]) #insert user id to temporary response list
         if food_collection.insert_one(response_list[0]):
             # clear the list
             response_list.clear()
@@ -106,10 +107,10 @@ async def save_generated_response_from_image(
             return {"message": "Food added successfully", "response": "success"}
         else:
             # return that failed to add food
-            return {"message": "Failed to add food", "response": "fail"}
+            return {"message": "Failed to add food", "response": "success"}
     else:
         # return that there is no food in list
-        return {"message": "No response to save", "response": "fail"}
+        return {"message": "No response to save", "response": "success"}
     
 
     

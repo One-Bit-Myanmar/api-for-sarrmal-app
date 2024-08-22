@@ -28,8 +28,7 @@ def get_calories_from_img(image: Image.Image):
             "calories": int,
             "category": str,
             "ingredients": list[str],
-            "url_to_how_to_cook": str,
-            "image_url": str,
+            "how_to_cook": str,
             "meal_time": str,
         }```
         

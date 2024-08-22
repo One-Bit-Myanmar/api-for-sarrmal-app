@@ -58,7 +58,6 @@ def verify_token(token: str) -> dict:
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     
-
 # get the current user func to check the token if user is auth or not
 # the next step we will create to get actually current active user
 async def get_current_user(
