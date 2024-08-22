@@ -73,17 +73,19 @@ def clean_and_convert_to_json(response_str):
     
 
 # recommend food with Gemini AI and return json object of food
-def generate_food_suggestion(user_info: str):
-    user_info = {
-        "weight": 60,
-        "height": 165,
-        "age": 25,
-        "diseases": ["None"],
-        "allergies": ["Peanuts"],
-        "gender": "Female",
-        "exercise": "High"
-        }
-    user_info = str(user_info)
+def generate_food_suggestion(User: dict):
+    print(User)
+    user_info = f"""{{
+        "weight": {User['weight']},
+        "height": {User['height']},
+        "age": {User['age']},
+        "diseases": {User['diseases']},
+        "allergies": {User['allergies']},
+        "gender": "{"Female" if User['gender'] == 0 else "Male"}",
+        "exercise": "{User['exercises']}",
+    }}"""
+    
+    print(user_info)
     try:
         model = genai.GenerativeModel(model_name='tunedModels/food-suggestion-ai-v1-uss801z982xp')
         result = model.generate_content(user_info)

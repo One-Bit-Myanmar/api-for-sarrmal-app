@@ -34,13 +34,8 @@ async def get_recommended(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
     ):
-    #change current user info to put into AI
-    keys = ['weight', 'height', 'age', 'diseases', 'allergies', 'exercises']
-    ai_input = {x: current_user[x] for x in keys}
-    ai_input['gender'] = 'Female' if current_user['gender'] else 'Male'
-    ai_input = str(ai_input)
-    # get_recommend food from ai generate
-    recommend_food_sets = generate_food_suggestion(ai_input) 
+    # get_recommend food from ai generate insert user
+    recommend_food_sets = generate_food_suggestion(current_user) 
     # if foods set is not none
     if not recommend_food_sets:
         raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
