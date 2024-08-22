@@ -21,4 +21,4 @@ PyJWT
 python-multipart
 google-generativeai
 pymongo
-authlib
+google-auth-oauthlib     

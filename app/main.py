@@ -50,35 +50,10 @@ app.include_router(TempFoodRouter, tags=["Temporary Foods"], prefix="/api/temp/f
 
 # calling root directory
 @app.get("/", tags=["Root"])
-async def read_root(code: str = None):
-    if code:
-        token_url = "https://accounts.google.com/o/oauth2/token"
-        data = {
-            "code": code,
-            "client_id": GOOGLE_CLIENT_ID,
-            "client_secret": GOOGLE_CLIENT_SECRET,
-            "redirect_uri": GOOGLE_REDIRECT_URI,
-            "grant_type": "authorization_code",
-        }
-        response = requests.post(token_url, data=data)
-        print(response.text)
-        print()
-        access_token = response.json().get("access_token")
-        global GOOGLE_ACCESS_TOKEN
-        GOOGLE_ACCESS_TOKEN = response.json().get("access_token")
-        user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo", headers={"Authorization": f"Bearer {access_token}"})
-        return access_token
+async def read_root():
     return {"message": "Welcome to food recommendation app"}
 
-@app.get("/login/google")
-async def login_google():
-    return {"abcd": 'abcd'}
     
-
-# @app.get("/token")
-# async def get_token(token: str = Depends(oauth2_scheme)):
-#     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
-
 # main method to run the application ///// run api with command
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_ID, port=PORT_ID, reload=RELOAD_STATE)

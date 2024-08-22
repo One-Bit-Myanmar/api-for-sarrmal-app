@@ -2,17 +2,20 @@ import re
 import google.generativeai as genai
 from PIL import Image
 import json
+import ast
+from app.services.refresh_google_oauth import load_creds
 
 #import gemini api key
 #from app.core.config import GEMINI_KEY
 
 #config the genai to use
-#genai.configure(api_key=GEMINI_KEY)
+creds = load_creds()
+genai.configure(credentials=creds)
 
 # Gemini Pro Model
-GEMINI_PRO = genai.GenerativeModel('gemini-pro')
-# Gemini Pro 1.5 Model
-GEMINI_PRO_1O5 = genai.GenerativeModel('gemini-1.5-pro')
+# GEMINI_PRO = genai.GenerativeModel('gemini-pro')
+# # Gemini Pro 1.5 Model
+# GEMINI_PRO_1O5 = genai.GenerativeModel('gemini-1.5-pro')
 # Regex pattern to match the text outside of the curly 
 PATTERN = r'```json\s*({.*?})\s*```'
 
@@ -70,21 +73,49 @@ def clean_and_convert_to_json(response_str):
 
 # recommend food with Gemini AI and return json object of food
 def generate_food_suggestion(user_info: str):
+    user_info = {
+        "weight": 60,
+        "height": 165,
+        "age": 25,
+        "diseases": ["None"],
+        "allergies": ["Peanuts"],
+        "gender": "Female",
+        "exercise": "High"
+        }
+    user_info = str(user_info)
     try:
         model = genai.GenerativeModel(model_name='tunedModels/food-suggestion-ai-v1-uss801z982xp')
-        print(genai.configure())
         result = model.generate_content(user_info)
-        print(result.text)
-        response = json.loads(result.text)
+        result = _format_json_from_gemini(result.text)
+        print(result)
+        print(type(result))
+        response = json.loads(result)
         return response
     
-    except json.JSONDecoder as json_err:
-        pass
+    except json.JSONDecodeError as json_err:
+        print(json_err)
+        try:
+            response = ast.literal_eval(result)
+            return response
+        except Exception:
+            print("error on ast.literal_eval")
+            pass
 
     except Exception as e:
         pass
 
     return None
+
+def _format_json_from_gemini(text: str):
+    front, end = 0, len(text) - 1
+
+    while text[front] != '{':
+        front += 1
+    
+    while text[end] != '}':
+        end -= 1
+
+    return text[front:end+1]
 
 # print(generate_food_suggestion(
 #     """{

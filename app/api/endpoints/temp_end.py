@@ -45,20 +45,20 @@ async def get_recommended(
     if not recommend_food_sets:
         raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
     # insert into temp food table
-    existing_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
-    # before we need to check that the foods already exist by user id
-    if existing_foods:
-        # if foods exist, delete them
-        if remove_temp_foods(str(current_user["_id"])):
-            # will insert 3 meal set so that need to iterate it
-            temp_food_collection.insert_many(list(recommend_food_sets))
-        else:
-            # if not then raise unable to delete foods
-            raise HTTPException(status_code=500, detail="Unable to delete foods")
-    else:
-        # else we only insert
-        # will insert 3 meal set so that need to iterate it
-        temp_food_collection.insert_many(list(recommend_food_sets))
+    # existing_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
+    # # before we need to check that the foods already exist by user id
+    # if existing_foods:
+    #     # if foods exist, delete them
+    #     if remove_temp_foods(str(current_user["_id"])):
+    #         # will insert 3 meal set so that need to iterate it
+    #         temp_food_collection.insert_many(list(recommend_food_sets))
+    #     else:
+    #         # if not then raise unable to delete foods
+    #         raise HTTPException(status_code=500, detail="Unable to delete foods")
+    # else:
+    #     # else we only insert
+    #     # will insert 3 meal set so that need to iterate it
+    #     temp_food_collection.insert_many(list(recommend_food_sets))
     # finally return the getting recommended food set
     # data: recommend_food_sets is a list type
     return {"response": "success", "data": recommend_food_sets}
