@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Request, Depends
 from pymongo.collection import Collection
 from app.core.config import connect_to_database
+from app.models.food_model import generate_food_suggestion
 from typing import List
 from bson import ObjectId
-
+import subprocess
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
@@ -33,26 +34,31 @@ async def get_recommended(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
     ):
+    #change current user info to put into AI
+    keys = ['weight', 'height', 'age', 'diseases', 'allergies', 'exercises']
+    ai_input = {x: current_user[x] for x in keys}
+    ai_input['gender'] = 'Female' if current_user['gender'] else 'Male'
+    ai_input = str(ai_input)
     # get_recommend food from ai generate
-    recommend_food_sets = get_recommended_foods() # this is main 
+    recommend_food_sets = generate_food_suggestion(ai_input) 
     # if foods set is not none
     if not recommend_food_sets:
         raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
     # insert into temp food table
-    existing_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
-    # before we need to check that the foods already exist by user id
-    if existing_foods:
-        # if foods exist, delete them
-        if remove_temp_foods(str(current_user["_id"])):
-            # will insert 3 meal set so that need to iterate it
-            temp_food_collection.insert_many(list(recommend_food_sets))
-        else:
-            # if not then raise unable to delete foods
-            raise HTTPException(status_code=500, detail="Unable to delete foods")
-    else:
-        # else we only insert
-        # will insert 3 meal set so that need to iterate it
-        temp_food_collection.insert_many(list(recommend_food_sets))
+    # existing_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
+    # # before we need to check that the foods already exist by user id
+    # if existing_foods:
+    #     # if foods exist, delete them
+    #     if remove_temp_foods(str(current_user["_id"])):
+    #         # will insert 3 meal set so that need to iterate it
+    #         temp_food_collection.insert_many(list(recommend_food_sets))
+    #     else:
+    #         # if not then raise unable to delete foods
+    #         raise HTTPException(status_code=500, detail="Unable to delete foods")
+    # else:
+    #     # else we only insert
+    #     # will insert 3 meal set so that need to iterate it
+    #     temp_food_collection.insert_many(list(recommend_food_sets))
     # finally return the getting recommended food set
     # data: recommend_food_sets is a list type
     return {"response": "success", "data": recommend_food_sets}

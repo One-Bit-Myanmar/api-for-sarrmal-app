@@ -2,11 +2,14 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from typing import Callable
 import uvicorn
+import requests, jwt
+
 
 # get configured env values
-from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE
+from app.core.config import HOST_ID, PORT_ID, RELOAD_STATE, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
 from app.db.mongodb import get_db
 
 # include router here
@@ -50,6 +53,7 @@ app.include_router(TempFoodRouter, tags=["Temporary Foods"], prefix="/api/temp/f
 async def read_root():
     return {"message": "Welcome to food recommendation app"}
 
+    
 # main method to run the application ///// run api with command
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST_ID, port=PORT_ID, reload=RELOAD_STATE)
