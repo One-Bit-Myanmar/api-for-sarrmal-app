@@ -3,8 +3,10 @@ from pymongo.collection import Collection
 from app.core.config import connect_to_database
 from app.models.food_model import generate_food_suggestion
 from typing import List
+from datetime import datetime
 from bson import ObjectId
-import subprocess
+# import subprocess
+from app.services.food_image_searching_service import serach_for_food_image
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
@@ -34,35 +36,19 @@ async def get_recommended(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
     ):
-    #change current user info to put into AI
-    keys = ['weight', 'height', 'age', 'diseases', 'allergies', 'exercises']
-    ai_input = {x: current_user[x] for x in keys}
-    ai_input['gender'] = 'Female' if current_user['gender'] else 'Male'
-    ai_input = str(ai_input)
-    # get_recommend food from ai generate
-    recommend_food_sets = generate_food_suggestion(ai_input) 
-    # if foods set is not none
-    if not recommend_food_sets:
-        raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
-    # insert into temp food table
-    # existing_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
-    # # before we need to check that the foods already exist by user id
-    # if existing_foods:
-    #     # if foods exist, delete them
-    #     if remove_temp_foods(str(current_user["_id"])):
-    #         # will insert 3 meal set so that need to iterate it
-    #         temp_food_collection.insert_many(list(recommend_food_sets))
-    #     else:
-    #         # if not then raise unable to delete foods
-    #         raise HTTPException(status_code=500, detail="Unable to delete foods")
-    # else:
-    #     # else we only insert
-    #     # will insert 3 meal set so that need to iterate it
-    #     temp_food_collection.insert_many(list(recommend_food_sets))
-    # finally return the getting recommended food set
-    # data: recommend_food_sets is a list type
-    return {"response": "success", "data": recommend_food_sets}
-
+    # generate the meal set
+    is_generated = generate_meal_sets(current_user)
+    if is_generated:
+        # get the inserted information
+        inserted_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
+        # change objectId to string for id 
+        for food in inserted_foods:
+            food["_id"] = str(food["_id"])
+        # finally return the getting recommended food set
+        # data: recommend_food_sets is a list type
+        return {"response": "success", "message": inserted_foods}
+    else:
+        return {"response": "failed", "message": "Failed to generate meal sets"}
 
 
 # confirmed the food list if user like the meal set
@@ -82,6 +68,11 @@ async def confirm_food_lists(
     if not temp_foods_list:
         raise HTTPException(status_code=404, detail="No temporary foods found")
     else:
+        # add created at and updated_at
+        for food in temp_foods_list:
+            food["created_at"] = datetime.utcnow()
+            food["updated_at"] = datetime.utcnow()
+            food["status"] = 0
         # remove the _id field from each
         for food in temp_foods_list:
             if "_id" in food:
@@ -114,19 +105,53 @@ async def get_food_details(
         raise HTTPException(status_code=404, detail="Not Found")
 
 
-# function to get the 3 set of meals 
-# this function must return the json format
-# make sure for json return format
-def get_recommended_foods() -> list[TempFoodItem]:
-    # this will generate by ai in here
+
+# function that will separate the dict and add to list and then return
+def convert_to_list(foods: dict, user_id: str):
+    food_list = []
+    # get the breakfast
+    breakfast_main_dish = foods['response']['breakfast']['main_dish']
+    breakfast_side_dish = foods['response']['breakfast']['side_dish']
+    b_main_dish_image = serach_for_food_image(str(breakfast_main_dish))
+    b_side_dish_image = serach_for_food_image(str(breakfast_side_dish))
+    # get the lunch
+    lunch_main_dish = foods['response']['lunch']['main_dish']
+    lunch_side_dish = foods['response']['lunch']['side_dish']
+    l_main_dish_image = serach_for_food_image(str(lunch_main_dish))
+    l_side_dish_image = serach_for_food_image(str(lunch_side_dish))
+    # get the dinner
+    dinner_main_dish = foods['response']['dinner']['main_dish']
+    dinner_side_dish = foods['response']['dinner']['side_dish']
+    d_main_dish_image = serach_for_food_image(str(dinner_main_dish))
+    d_side_dish_image = serach_for_food_image(str(dinner_side_dish))
+    # for breakfast image url importing
+    breakfast_main_dish["image_url"] = b_main_dish_image
+    breakfast_side_dish["image_url"] = b_side_dish_image
+    breakfast_main_dish["user_id"] = user_id
+    breakfast_side_dish["user_id"] = user_id
+    # append to the list
+    food_list.append(breakfast_main_dish)
+    food_list.append(breakfast_side_dish)
+    # for lunch image url importing
+    lunch_main_dish["image_url"] = l_main_dish_image
+    lunch_side_dish["image_url"] = l_side_dish_image
+    lunch_main_dish["user_id"] = user_id
+    lunch_side_dish["user_id"] = user_id
+    # append to the list
+    food_list.append(lunch_main_dish)
+    food_list.append(lunch_side_dish)
+    # for dinner image url importing
+    dinner_main_dish["image_url"] = d_main_dish_image
+    dinner_main_dish["image_url"] = d_side_dish_image
+    dinner_main_dish["user_id"] = user_id
+    dinner_side_dish["user_id"] = user_id
+    # append to the list
+    food_list.append(dinner_main_dish)
+    food_list.append(dinner_side_dish)
+    # return the food lists
+    return food_list
     
-    # get the response by ai
     
-    # return the data
-    return []
-
-
-
 # function to delete the temporary foods
 def remove_temp_foods(
     user_id: str # remove by user id
@@ -138,4 +163,50 @@ def remove_temp_foods(
         return True
     else:
         False
-    
+  
+  
+# get recommended foods by ai
+def generate_meal_sets(user: User):
+    #change current user info to put into AI
+    keys = ['weight', 'height', 'age', 'diseases', 'allergies', 'exercises']
+    ai_input = {x: user[x] for x in keys}
+    ai_input['gender'] = 'Female' if user['gender'] else 'Male'
+    ai_input = str(ai_input)
+    # get_recommend food from ai generate
+    recommend_food_sets = generate_food_suggestion(ai_input) 
+    print(type(recommend_food_sets))
+    # splice the dicts into pieces and append to list and return it 
+    recommend_food_lists = convert_to_list(recommend_food_sets, str(user["_id"]))
+    # if foods set is not none
+    if not recommend_food_lists:
+        raise HTTPException(status_code=404, detail="Unable to fetch foods, check your internet connection")
+    # insert into temp food table
+    existing_foods = temp_food_collection.find({"user_id": str(user["_id"])})
+    # before we need to check that the foods already exist by user id
+    if existing_foods:
+        # if foods exist, delete them
+        if remove_temp_foods(str(user["_id"])):
+            # will insert 3 meal set so that need to iterate it
+            for food in recommend_food_lists:
+                # add created at and updated at fields
+                food["created_at"] = datetime.utcnow()
+                food["updated_at"] = datetime.utcnow()
+                # insert into temp food table
+                temp_food_collection.insert_one(food)
+        # say that the operation success
+            return True
+        else:
+            # if not then raise unable to delete foods
+            raise HTTPException(status_code=500, detail="Unable to delete foods")
+    else:
+        # else we only insert
+        # will insert 3 meal set so that need to iterate it
+        for food in recommend_food_lists:
+                # add created at and updated at fields
+                food["created_at"] = datetime.utcnow()
+                food["updated_at"] = datetime.utcnow()
+                # insert into temp food table
+                temp_food_collection.insert_one(food)
+        return True
+    return False
+      
