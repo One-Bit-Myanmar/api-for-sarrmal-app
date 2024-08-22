@@ -36,6 +36,7 @@ async def get_recommended(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
     ):
+
     # generate the meal set
     is_generated = generate_meal_sets(current_user)
     if is_generated:
