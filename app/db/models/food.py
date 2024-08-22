@@ -7,7 +7,7 @@ class Food(BaseModel):
     name: str
     category: str
     calories: int
-    url_to_how_to_cook: str
+    how_to_cook: str
     image_url: str
     meal_time: str
     status: int = Field(default=0)

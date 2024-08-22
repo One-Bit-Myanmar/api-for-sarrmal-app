@@ -10,16 +10,16 @@ from app.services.refresh_google_oauth import load_creds
 
 #config the genai to use
 creds = load_creds()
-genai.configure(credentials=creds)
+genai.configure(credentials=creds, transport="grpc")
 
 # Gemini Pro Model
-# GEMINI_PRO = genai.GenerativeModel('gemini-pro')
+GEMINI_PRO = genai.GenerativeModel('gemini-pro')
 # # Gemini Pro 1.5 Model
-# GEMINI_PRO_1O5 = genai.GenerativeModel('gemini-1.5-pro')
+GEMINI_PRO_1O5 = genai.GenerativeModel('gemini-1.5-pro')
 # Regex pattern to match the text outside of the curly 
 PATTERN = r'```json\s*({.*?})\s*```'
 
-
+# the func will handle to get calories from image
 def get_calories_from_img(image: Image.Image):
     # generate the response 
     response = GEMINI_PRO_1O5.generate_content([
@@ -31,8 +31,7 @@ def get_calories_from_img(image: Image.Image):
             "calories": int,
             "category": str,
             "ingredients": list[str],
-            "url_to_how_to_cook": str,
-            "image_url": str,
+            "how_to_cook": str,
             "meal_time": str,
         }```
         
@@ -73,25 +72,13 @@ def clean_and_convert_to_json(response_str):
     
 
 # recommend food with Gemini AI and return json object of food
-def generate_food_suggestion(User: dict):
-    print(User)
-    user_info = f"""{{
-        "weight": {User['weight']},
-        "height": {User['height']},
-        "age": {User['age']},
-        "diseases": {User['diseases']},
-        "allergies": {User['allergies']},
-        "gender": "{"Female" if User['gender'] == 0 else "Male"}",
-        "exercise": "{User['exercises']}",
-    }}"""
-    
-    print(user_info)
+def generate_food_suggestion(user_info: str):
     try:
-        model = genai.GenerativeModel(model_name='tunedModels/food-suggestion-ai-v1-uss801z982xp')
+        model = genai.GenerativeModel(model_name=f'tunedModels/food-suggestion-ai-v1-uss801z982xp')
         result = model.generate_content(user_info)
+        print(result.text)
         result = _format_json_from_gemini(result.text)
-        print(result)
-        print(type(result))
+        
         response = json.loads(result)
         return response
     
@@ -109,6 +96,8 @@ def generate_food_suggestion(User: dict):
 
     return None
 
+
+# get
 def _format_json_from_gemini(text: str):
     front, end = 0, len(text) - 1
 

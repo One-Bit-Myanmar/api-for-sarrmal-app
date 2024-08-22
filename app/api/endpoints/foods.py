@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 from app.api.middleware.rate_limiter import limiter
 from io import BytesIO
 from PIL import Image
+from datetime import datetime
 
 # imoprt the trained model by api
 from app.models.food_model import get_calories_from_img 
@@ -27,21 +28,6 @@ food_histories_collection: Collection = db["food_histories"] # food histories co
 # init the list for storing the generated response temporarily
 # after that the add_additional route will take the rest 
 response_list = []
-
-        # new_food = {
-        #     "user_id": current_user.id,
-        #     "name": temp_food["name"],
-        #     "category": temp_food["category"],
-        #     "ingredients": temp_food["ingredients"],
-        #     "calories": temp_food["calories"],
-        #     "food_allergies": temp_food["food_allergies"],
-        #     "url_to_how_to_cook": temp_food["url_to_how_to_cook"],
-        #     "image": temp_food["image"],
-        #     "best_time_to_eat": temp_food["best_time_to_eat"],
-        #     "created_at": temp_food["created_at"],
-        #     "updated_at": temp_food["updated_at"],
-        #     "selected": True
-        # }
 
 # get the food by the current active user
 @router.get("/get/confirmed") # init the get route
@@ -78,6 +64,8 @@ async def get_food_calories_from_image(
         if response["message"] == None:
             # clean the temporary response list
             response_list.clear()
+            # add user id to response json list
+            response["user_id"] = str(current_user["_id"])
             # append into the temporary list for further use
             response_list.append(response)
             print(response_list)
@@ -98,7 +86,6 @@ async def save_generated_response_from_image(
     # check the list is empty or not
     if len(response_list) > 0:
         # add the food into food table from generated list
-        response_list[0]["user_id"] = str(current_user["_id"]) #insert user id to temporary response list
         if food_collection.insert_one(response_list[0]):
             # clear the list
             response_list.clear()
@@ -106,10 +93,10 @@ async def save_generated_response_from_image(
             return {"message": "Food added successfully", "response": "success"}
         else:
             # return that failed to add food
-            return {"message": "Failed to add food", "response": "fail"}
+            return {"message": "Failed to add food", "response": "success"}
     else:
         # return that there is no food in list
-        return {"message": "No response to save", "response": "fail"}
+        return {"message": "No response to save", "response": "success"}
     
 
     
@@ -134,14 +121,16 @@ async def tick_taken_food(
                 }
         })
         # if modified is correct then insert into food histories collection
-        if result.modified_count > 0:
+        if result.modified_count > 0 :
             # insert into food history collection
             food_histories_collection.insert_one({
                 "user_id": str(current_user["_id"]),
-                "food_id": str(food["_id"])
+                "food_id": food_id,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             })
             # return the response
             return {"response": "success", "message": "Tick the food successfully"}
     else:
         # return the response
-        return {"response": "fail", "message": "Food not found"}
+        return {"response": "failed", "message": "Food not found"}
