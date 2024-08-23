@@ -38,16 +38,16 @@ async def get_recommended(
     ):
 
     # generate the meal set
-    is_generated = generate_meal_sets(current_user)
+    is_generated = generate_and_insert_mealset(current_user)
     if is_generated:
         # get the inserted information
-        inserted_foods = temp_food_collection.find({"user_id": str(current_user["_id"])})
+        inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
         # change objectId to string for id 
         for food in inserted_foods:
             food["_id"] = str(food["_id"])
         # finally return the getting recommended food set
         # data: recommend_food_sets is a list type
-        return {"response": "success", "message": inserted_foods}
+        return {"response": "success", "data": inserted_foods}
     else:
         return {"response": "failed", "message": "Failed to generate meal sets"}
 
@@ -167,12 +167,18 @@ def remove_temp_foods(
   
   
 # get recommended foods by ai
-def generate_meal_sets(user: User):
+def generate_and_insert_mealset(user: User):
+    print(user)
     #change current user info to put into AI
-    keys = ['weight', 'height', 'age', 'diseases', 'allergies', 'exercises']
-    ai_input = {x: user[x] for x in keys}
-    ai_input['gender'] = 'Female' if user['gender'] else 'Male'
-    ai_input = str(ai_input)
+    ai_input = f"""{{
+    "weight": {user['weight']},
+    "height": {user['height']},
+    "age": {user['age']},
+    "diseases": [{user['diseases']}],
+    "allergies": [{user['allergies']}],
+    "gender": "{"Female" if user['gender'] == 0 else "Male"}",
+    "exercise": "{user['exercises']}"
+    }}"""
     # get_recommend food from ai generate
     recommend_food_sets = generate_food_suggestion(ai_input) 
     print(type(recommend_food_sets))
