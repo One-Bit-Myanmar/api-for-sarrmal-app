@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from bson import ObjectId
 from datetime import datetime
+from app.services.user_service import calculate_age
 
 class User(BaseModel):
     username: str

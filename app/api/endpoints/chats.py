@@ -23,6 +23,7 @@ db = db["food_recommendation_database"] # database name
 chat_collection: Collection = db["chats"] # chat table inside food_recommendation_database
 user_collection: Collection = db["users"] # user table inside food_recommendation_database
 
+
 router = APIRouter()
 
 # chat with ai
@@ -43,11 +44,11 @@ async def chat_ai(
     # # create chat dict to save in database
     chat_dict = {
         "user_id": str(current_user["_id"]),
-        "date": datetime.utcnow(),
+        "date": datetime.now(),
         "message": req_msg.message,
-        "response": "temp response from ai",
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
+        "response": response,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
     }
     # # save to database
     if chat_collection.insert_one(chat_dict):
@@ -98,7 +99,7 @@ async def update_chat(
             {
                 "message": request_msg.message,
                 "response": response,
-                "date": datetime.utcnow(),
+                "date": datetime.now(),
             }
         }
     )
@@ -115,14 +116,19 @@ async def get_chat_history(
     # get the start fo day and end of day
     start_of_today = datetime.combine(datetime.today(), datetime.min.time())
     start_of_tomorrow = start_of_today + timedelta(days=1)
+    
+    #delete the old chats
+    chat_collection.delete_many({
+        "user_id": str(current_user["_id"]),
+        "date": {"$lt": start_of_today}
+    })
+    
     # get the chats for today ( get as list )
     chats = list(chat_collection.find({
         "user_id": str(current_user["_id"]),
-        "date": {
-                "$gte": start_of_today,
-                "$lt": start_of_tomorrow
-            }
+        "date": {"$gte": start_of_today, "$lt": start_of_tomorrow}
     }))
+    print(start_of_today, start_of_tomorrow)
     # if chat not found then raise an error
     if not chats:
         raise HTTPException(status_code=404, detail="No chats Found")
