@@ -24,7 +24,7 @@ def get_calories_from_img(image: Image.Image):
     # generate the response 
     response = GEMINI_PRO_1O5.generate_content([
         """give me result by following format
-        - meal time must be time format like this "12:00 AM"
+        - meal time must be time format like this "00:00 AM"
         
         ```json{
             "name": str,
@@ -44,13 +44,13 @@ def get_calories_from_img(image: Image.Image):
         image])
     # content_text = response["content"]["parts"][0]["text"]
     content_text = response.text
+    print(content_text)
     # Clean the response by removing the JSON-like structure
     match = re.search(PATTERN, content_text, re.DOTALL)
     if match:
         # Extract the JSON string
         json_string = match.group(1)
         # Convert the string to a Python dictionary
-        print(json_string)
         try:
             # Convert the string to a proper Python dictionary
             json_dict = json.loads(json_string)

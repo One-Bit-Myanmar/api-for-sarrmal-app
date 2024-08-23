@@ -48,29 +48,36 @@ async def get_confirmed_food_list(
     
 
 
-# get the food calories from user input aspecially from image
-@router.post("/get/calories") # init the get calories from image route
-@limiter.limit("5/minute") # rate limiting middleware
+@router.post("/get/calories")
+@limiter.limit("5/minute")
 async def get_food_calories_from_image(
-    request: Request, # without limiter not work
-    file: UploadFile = File(...), # for upload file
-    current_user: User = Depends(get_current_active_user) # for user auth
-    ):
+    request: Request,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_active_user)
+):
     try:
         # Read the uploaded image file
         image = Image.open(BytesIO(await file.read()))
-        # use model to predict the food ID from the image
+        # Use model to predict the food ID and calories from the image
         response = get_calories_from_img(image)
-        if response["message"] == None:
-            # clean the temporary response list
+
+        # Check if the "message" attribute is not present or is None
+        if response.get("message") is None:
+            # Clean the temporary response list
             response_list.clear()
-            # add user id to response json list
+            # Add user id to response JSON list
             response["user_id"] = str(current_user["_id"])
-            # append into the temporary list for further use
+            # Append the response to the temporary list for further use
             response_list.append(response)
-            print(response_list)
-        # Convert the string to a Python dictionary
+        else:
+            # If message is present, print it and return without saving
+            print(f"Message present: {response['message']}")
+        
+        print(response_list)
+        
+        # Return the response
         return response
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
