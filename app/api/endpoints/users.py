@@ -7,7 +7,10 @@ from app.core.config import connect_to_database
 from app.db.models.user import User, UserUpdateModel
 from app.core.config import connect_to_database, SECRET_KEY, ALGORITHM
 from bson import ObjectId
+import re
 
+# import services
+from app.services.user_service import is_valid_email
 
 # import slowapi modules
 from app.api.middleware.rate_limiter import limiter
@@ -85,6 +88,8 @@ async def register_user(
     # if user is existed, then raise the Http error that user is already existed
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
+    if not is_valid_email(user.email):
+        raise HTTPException(status_code=400, detail="Invalid Email!!")
     # get the user password and hashed it and the create access token to make sure for auth
     user.password = Hash.bcrypt(user.password)
     # create access token expires for token expiration time
