@@ -168,7 +168,6 @@ def remove_temp_foods(
   
 # get recommended foods by ai
 def generate_and_insert_mealset(user: User):
-    print(user)
     #change current user info to put into AI
     ai_input = f"""{{
     "weight": {user['weight']},
