@@ -105,9 +105,6 @@ async def register_user(
     # finnally return the response that user is created successfully
     return {"response": "success", "access_token": access_token, "message": "User created successfully"}
 
-
-
-
 # User login route
 @router.post('/login')
 @limiter.limit("5/minute")
