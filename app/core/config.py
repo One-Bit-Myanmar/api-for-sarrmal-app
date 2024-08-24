@@ -1,25 +1,21 @@
 from pymongo import MongoClient
-from dotenv import dotenv_values
 import os
 
-# get the dotenv path
-ENV_VALUE = dotenv_values("./env/credentials.env")
 
-CONNECTION_STRING = ENV_VALUE["CONNECTION_STRING"]
-HOST_ID = ENV_VALUE["HOST_ID"]
-PORT_ID = ENV_VALUE["PORT_ID"]
-RELOAD_STATE = ENV_VALUE["RELOAD_STATE"]
-DEBUG = ENV_VALUE.get("DEBUG", "False") # provide default value is not set
-SECRET_KEY = ENV_VALUE["SECRET_KEY"]
-ALGORITHM = ENV_VALUE["ALGORITHM"]
-GEMINI_KEY = ENV_VALUE["GEMINI_KEY"]
-
-UNSPLASH_ACCESS_KEY_1 = ENV_VALUE["UNSPLASH_ACCESS_KEY1"]
-UNSPLASH_ACCESS_KEY_2 = ENV_VALUE["UNSPLASH_ACCESS_KEY2"]
-
-GOOGLE_CLIENT_ID = ENV_VALUE["GOOGLE_CLIENT_ID"]
-GOOGLE_CLIENT_SECRET = ENV_VALUE["GOOGLE_CLIENT_SECRET"]
-GOOGLE_REDIRECT_URI = ENV_VALUE["GOOGLE_REDIRECT_URI"]
+# Access environment variables
+CONNECTION_STRING = os.getenv("CONNECTION_STRING")
+HOST_ID = os.getenv("HOST_ID", "0.0.0.0")  # Default to 0.0.0.0 if not set
+PORT_ID = int(os.getenv("PORT_ID", 8000))  # Default to 8000 and ensure it's an integer
+RELOAD_STATE = os.getenv("RELOAD_STATE", "False").lower() == "true"  # Convert to boolean
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"  # Convert to boolean
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+GEMINI_KEY = os.getenv("GEMINI_KEY")
+UNSPLASH_ACCESS_KEY_1 = os.getenv("UNSPLASH_ACCESS_KEY_1")
+UNSPLASH_ACCESS_KEY_2 = os.getenv("UNSPLASH_ACCESS_KEY_2")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 
 # get connection
 def connect_to_database():
