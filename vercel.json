@@ -11,12 +11,5 @@
         "src": "/(.*)",
         "dest": "app/main.py"
       }
-    ],
-    "ignore": [
-        "tests/",
-        "docs/",
-        "*.md",
-        "*.yml",
-        "*.yaml"
     ]
   }
