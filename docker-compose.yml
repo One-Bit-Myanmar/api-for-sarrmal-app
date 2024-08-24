@@ -20,7 +20,6 @@ services:
       - mongodb
     environment:
       - MONGO_URI=mongodb://mongodb:27017/food_recommendation_database
-      - GEMINI_API=AIzaSyBrxMCNDnKxpSuWwAW4HF0vaWmq098Bw4Y
 
 volumes:
   mongo_data:
