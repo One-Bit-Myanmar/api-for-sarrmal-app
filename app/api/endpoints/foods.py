@@ -10,6 +10,7 @@ from app.api.middleware.rate_limiter import limiter
 from io import BytesIO
 from PIL import Image
 from datetime import datetime
+from app.services.food_image_searching_service import serach_for_food_image
 
 # imoprt the trained model by api
 from app.models.food_model import get_calories_from_img 
@@ -67,6 +68,10 @@ async def get_food_calories_from_image(
             response_list.clear()
             # Add user id to response JSON list
             response["user_id"] = str(current_user["_id"])
+            response["created_at"] = datetime.now() # add created at datetime
+            response["updated_at"] = datetime.now() # add updated at datetime
+            response["image_url"] = serach_for_food_image(response["name"])
+            response["status"] = 0
             # Append the response to the temporary list for further use
             response_list.append(response)
         else:
