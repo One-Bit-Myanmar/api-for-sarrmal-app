@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from app.core.config import connect_to_database
 from app.db.models.user import User, UserUpdateModel
-from app.core.config import connect_to_database, SECRET_KEY, ALGORITHM
+from app.core.config import connect_to_database, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, INITIAL_TOKEN, REFRESH_TOKEN
 from bson import ObjectId
-import re
+from app.services.refresh_google_oauth import create_hello_json
 
 # import services
 from app.services.user_service import is_valid_email
@@ -313,3 +313,35 @@ async def read_users_me(
     ):
     current_user["_id"] = str(current_user["_id"])
     return current_user
+
+
+@router.post('/update_token')
+@limiter.limit("5/minute")
+async def update_user( 
+    request: Request, # user id that we want to update
+    user_collection: Collection = Depends(get_user_collection), # make sure user collection is accessible 
+    current_user: User = Depends(get_current_active_user), # make sure current user is active
+    token: str = "",
+    refresh_token: str = "",
+    expiry: datetime = ""
+    ):
+
+    # check if the user is the same as authurized user
+    if current_user["email"] != "sam":
+        return {"permission": "false"}
+    if not token and not refresh_token:
+        HTTPException(404, "bad request")
+
+    try:
+        create_hello_json(token=token,
+                refresh_token=refresh_token, 
+                token_uri="https://oauth2.googleapis.com/token", 
+                client_id=OAUTH_CLIENT_ID,
+                client_secret=OAUTH_CLIENT_SECRET, 
+                scopes=["https://www.googleapis.com/auth/generative-language.retriever"], 
+                universe_domain="googleapis.com", 
+                account="", expiry=expiry)
+    except Exception:
+        HTTPException(500, "Unknown Error")
+    
+    return {"response": "token update successful"}
