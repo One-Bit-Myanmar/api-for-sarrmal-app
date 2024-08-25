@@ -32,7 +32,7 @@ router = APIRouter()
 # refresh the food
 # get the food list by recommended by ai (refresh the foods)
 @router.get("/get/recommended") # define route
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("15/minute") # rate limiting middleware
 async def get_recommended(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
@@ -54,7 +54,7 @@ async def get_recommended(
     
 # generate the foods but don't refresh it
 @router.get("/get/temp_foods") # define route
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("15/minute") # rate limiting middleware
 async def get_temp_foods(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for active user like auth
