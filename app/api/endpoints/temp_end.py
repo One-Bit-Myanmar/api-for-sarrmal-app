@@ -29,6 +29,7 @@ temp_food_collection: Collection = db["temp_foods"] # temp food table inside of 
 # init the api router
 router = APIRouter()
 
+# refresh the food
 # get the food list by recommended by ai (refresh the foods)
 @router.get("/get/recommended") # define route
 @limiter.limit("5/minute") # rate limiting middleware
@@ -50,6 +51,38 @@ async def get_recommended(
         return {"response": "success", "data": inserted_foods}
     else:
         return {"response": "failed", "message": "Failed to generate meal sets"}
+    
+# generate the foods but don't refresh it
+@router.get("/get/temp_foods") # define route
+@limiter.limit("5/minute") # rate limiting middleware
+async def get_temp_foods(
+    request: Request, # without this the limiter won't work
+    current_user: User = Depends(get_current_active_user) # for active user like auth
+    ):
+
+    # if foods are already exist then don't insert new
+    if temp_food_collection.count_documents({"user_id": str(current_user["_id"])}):
+        # get the inserted information
+        inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
+        # change objectId to string for id
+        for food in inserted_foods:
+            food["_id"] = str(food["_id"])
+            # finally return the getting recommended food set
+        return {"response": "success", "data": inserted_foods}
+    else:
+    # generate the meal set
+        is_generated = generate_and_insert_mealset(current_user)
+        if is_generated:
+            # get the inserted information
+            inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
+            # change objectId to string for id 
+            for food in inserted_foods:
+                food["_id"] = str(food["_id"])
+            # finally return the getting recommended food set
+            # data: recommend_food_sets is a list type
+            return {"response": "success", "data": inserted_foods}
+        else:
+            return {"response": "failed", "message": "Failed to generate meal sets"}
 
 
 # confirmed the food list if user like the meal set
