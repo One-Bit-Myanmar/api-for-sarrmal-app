@@ -127,7 +127,7 @@ async def login_user(
         raise HTTPException(status_code=404, detail="User not found")
     # Call verify_password with the user_collection, email, and password
     if not verify_password(user_collection, form_data.username, form_data.password):
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail=f"Incorrect username or password//inputs:username:{form_data.username}/password:{form_data.password}")
     # create access token expires for token expiration time
     access_token_expires = timedelta(hours=1)
     # after that create access token and assign to access_token variable
