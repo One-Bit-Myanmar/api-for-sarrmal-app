@@ -16,9 +16,7 @@ class User(BaseModel):
     allergies: List[str]
     gender: int
     exercises: str
-    goals: List[str]
     disabled: Optional[bool] = None
-    preferred_foods: Optional[List[str]] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
@@ -55,8 +53,6 @@ class UserUpdateModel(BaseModel):
     allergies: list[str]
     gender: int
     exercises: str
-    goals: list[str]
-    preferred_foods: Optional[List[str]] = Field(default_factory=list)
 
     
 
