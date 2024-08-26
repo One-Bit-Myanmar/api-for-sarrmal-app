@@ -20,7 +20,7 @@ food_history_collection: Collection = db["food_recommendation_database"]["food_h
 
 # Get the food history by user ID
 @router.get("/get") # route init
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def get_food_history(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for current user active user
