@@ -93,6 +93,8 @@ async def confirm_food_lists(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user), # for active user
     ):
+    # Get the start of today's date (00:00:00)
+    start_of_today = datetime.combine(datetime.today(), datetime.min.time())
     # get temp food history from temp food table
     # find by user_id ---> will get 3 sets of meal
     temp_foods = temp_food_collection.find({
@@ -111,10 +113,42 @@ async def confirm_food_lists(
         for food in temp_foods_list:
             if "_id" in food:
                 del food["_id"]
-        # iterate the temp foods and insert into food table
-        food_collection.insert_many(temp_foods_list)
-        # and delete the temp foods from temp food table
-        temp_food_collection.delete_many({"user_id": str(current_user["_id"])})
+        # check today confirmed food list exist aspect to status = 0 and updated 
+        food_list_of_today = food_collection.find({
+            "user_id": str(current_user["_id"]),
+            "status": 0,
+            "updated_at": {"$gte": start_of_today}
+        })
+        # Convert the cursor to a list and count the items
+        food_list_of_today = list(food_list_of_today)
+        food_count_of_today = len(food_list_of_today)
+        if food_list_of_today:
+            # Use food_count_of_today to splice the temp_foods_list
+            for i, food in enumerate(temp_foods_list[:food_count_of_today]):
+                food_collection.update_one(
+                    {
+                        "user_id": str(current_user["_id"]),
+                        "status": 0,
+                        "updated_at": {"$gte": start_of_today}
+                    },
+                    {
+                        "$set": {
+                            "name": food["name"],
+                            "calories": food["calories"],
+                            "category": food["category"],
+                            "meal_time": food["meal_time"],
+                            "ingredients": food["ingredients"],
+                            "how_to_cook": food["how_to_cook"],
+                            "image_url": food["image_url"],
+                            "updated_at": datetime.utcnow()
+                        }
+                    }
+                )
+        else:
+            # iterate the temp foods and insert into food table
+            food_collection.insert_many(temp_foods_list)
+            # and delete the temp foods from temp food table
+            temp_food_collection.delete_many({"user_id": str(current_user["_id"])})
     return {"response": "success", "message": "Foods confirmed and moved to food collection"}
     
 
