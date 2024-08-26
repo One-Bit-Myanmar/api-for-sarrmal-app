@@ -20,6 +20,8 @@ INITIAL_TOKEN = os.environ["TOKEN_VALUE"]
 REFRESH_TOKEN = os.environ["REFRESH_TOKEN"]
 OAUTH_CLIENT_ID = os.environ["OAUTH_CLIENT_ID"]
 OAUTH_CLIENT_SECRET = os.environ["OAUTH_CLIENT_SECRET"]
+OAUTH_API = os.environ["OAUTH_API"]
+SEARCH_ENGINE_ID = os.environ["SEARCH_ENGINE_ID"]
 
 # get connection
 def connect_to_database():
