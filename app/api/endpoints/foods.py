@@ -37,8 +37,14 @@ async def get_confirmed_food_list(
         request: Request, # without this the limiter won't work
         current_user: User = Depends(get_current_active_user) # get the current active user
     ):
+    # Get the start of today's date (00:00:00)
+    start_of_today = datetime.combine(datetime.today(), datetime.min.time())
     # get the food list by user id
-    food_lists = food_collection.find({"user_id": str(current_user["_id"])})
+    food_lists = food_collection.find({
+        "user_id": str(current_user["_id"]),
+        "created_at": {"$gte": start_of_today},
+        "status": 0,
+    })
     # change the food_lists into list
     food_lists = list(food_lists)
     # change ObjectId into String id so that we can return with json format
