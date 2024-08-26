@@ -32,7 +32,7 @@ response_list = []
 
 # get the food by the current active user
 @router.get("/get/confirmed") # init the get route
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def get_confirmed_food_list(
         request: Request, # without this the limiter won't work
         current_user: User = Depends(get_current_active_user) # get the current active user
@@ -56,7 +56,7 @@ async def get_confirmed_food_list(
 
 
 @router.post("/get/calories")
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def get_food_calories_from_image(
     request: Request,
     file: UploadFile = File(...),
@@ -96,7 +96,7 @@ async def get_food_calories_from_image(
 
 # save the generated response to food collection with user id
 @router.post("/add/generated_calories") # init the add generated_calories
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def save_generated_response_from_image(
         request: Request, # without limiter not work
         current_user: User = Depends(get_current_active_user) # for user auth
@@ -120,7 +120,7 @@ async def save_generated_response_from_image(
     
 # tick the eaten food if user take the food
 @router.put("/tick/{food_id}") # init the router
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def tick_taken_food(
     request: Request, # without this limiter not work
     food_id: str, # tick the food by food id

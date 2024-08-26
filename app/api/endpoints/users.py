@@ -32,7 +32,7 @@ router = APIRouter()
 
 # Get users list
 @router.get('/get')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def get_users(
     request: Request, # without this limiter not work
     user_collection: Collection = Depends(get_user_collection), # get the user collection
@@ -51,7 +51,7 @@ async def get_users(
 
 # Get specific user by ID
 @router.get('/get/{user_id}')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def get_user(
     user_id: str, # user id from url
     request: Request, # without this the limiter won't work
@@ -72,7 +72,7 @@ async def get_user(
 
 # Register a new user
 @router.post('/register')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def register_user( 
     user: User, # User format that we will get
     request: Request, # without this the limiter won't work
@@ -112,7 +112,7 @@ async def register_user(
 
 # User login route
 @router.post('/login')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def login_user( 
     request: Request, # without this the limiter won't work
     form_data: OAuth2PasswordRequestForm = Depends(), # to form data input
@@ -171,7 +171,7 @@ async def login_user(
 
 # Delete a user account by someone
 @router.delete('/delete/{user_id}')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def delete_user(
     user_id: str, # that will get from url bar
     request: Request, # without this the limiter won't work
@@ -193,7 +193,7 @@ async def delete_user(
 
 # Delete a user account on my own
 @router.delete('/delete')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def delete_user(
     request: Request, # without this the limiter won't work
     user_collection: Collection = Depends(get_user_collection), # make sure the user collection is accessble if yes, then this func will work successfully
@@ -212,7 +212,7 @@ async def delete_user(
 
 # Sign out a user
 @router.put('/logout')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def logout(  
     request: Request, # without this the limiter wonkl't work
     user_collection: Collection = Depends(get_user_collection), # to work func correctly make sure the db dependency is accessible
@@ -240,7 +240,7 @@ async def logout(
 
 # Update user information by someone
 @router.put('/update/{user_id}')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def update_user( 
     user_id: str, # user id that we want to update
     request: Request, # without this limiter not work
@@ -269,7 +269,7 @@ async def update_user(
     
 # Update user information on my own
 @router.put('/update')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def update_user( 
     request: Request, # user id that we want to update
     user_update: UserUpdateModel, # a Schemas model for partial updating
@@ -306,7 +306,7 @@ def verify_password(user_collection: Collection, email: str, password: str) -> b
 
 # get the current active logined user
 @router.get("/me", response_model=User)
-@limiter.limit('5/minute')
+@limiter.limit('50/minute')
 async def read_users_me(
     request: Request, # without this limiter not work
     current_user: User = Depends(get_current_active_user)
@@ -316,7 +316,7 @@ async def read_users_me(
 
 
 @router.post('/update_token')
-@limiter.limit("5/minute")
+@limiter.limit("50/minute")
 async def update_user( 
     request: Request, # user id that we want to update
     user_collection: Collection = Depends(get_user_collection), # make sure user collection is accessible 

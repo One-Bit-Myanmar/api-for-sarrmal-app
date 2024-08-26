@@ -28,7 +28,7 @@ router = APIRouter()
 
 # chat with ai
 @router.post("/chat") # init router 
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def chat_ai(
     request: Request, # without this the limiter won't work
     req_msg: RequestModel, # request message model this only have partial field 
@@ -59,7 +59,7 @@ async def chat_ai(
 
 # get the specific chat
 @router.get("/chat/{chat_id}") # init router
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def get_chat(
     request: Request, # without this the limiter won't work
     chat_id: str, # get the chat id
@@ -76,7 +76,7 @@ async def get_chat(
 
 # edit and update the user request
 @router.put("/chat/{chat_id}") # init router
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def update_chat(
     request: Request, # without this the limiter won't work
     chat_id: str, # get chat id
@@ -108,7 +108,7 @@ async def update_chat(
 
 # get the chat history by current user
 @router.get('/chat') # init route
-@limiter.limit("5/minute") # rate limiting middleware
+@limiter.limit("50/minute") # rate limiting middleware
 async def get_chat_history(
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user) # for user auth check active or not
