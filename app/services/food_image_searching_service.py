@@ -49,6 +49,6 @@ def serach_for_food_image(search_query):
         if 'items' in result:
             return result['items'][0]['link']
         else:
-            return {"error": "didnt find image"}
+            return "error.png"
     else:
-        return {"error": "something wrong with image searching server"}
+        return "error.png"

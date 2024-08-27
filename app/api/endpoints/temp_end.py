@@ -210,7 +210,7 @@ def convert_to_list(foods: dict, user_id: str):
     food_list.append(lunch_side_dish)
     # for dinner image url importing
     dinner_main_dish["image_url"] = d_main_dish_image
-    dinner_main_dish["image_url"] = d_side_dish_image
+    dinner_side_dish["image_url"] = d_side_dish_image
     dinner_main_dish["user_id"] = user_id
     dinner_side_dish["user_id"] = user_id
     # append to the list
@@ -247,7 +247,6 @@ def generate_and_insert_mealset(user: User):
     }}"""
     # get_recommend food from ai generate
     recommend_food_sets = generate_food_suggestion(ai_input) 
-    print(type(recommend_food_sets))
     # splice the dicts into pieces and append to list and return it 
     recommend_food_lists = convert_to_list(recommend_food_sets, str(user["_id"]))
     # if foods set is not none
