@@ -31,14 +31,14 @@ def serach_for_food_image(search_query):
     str: The link to the first image result or a message if no results are found.
     """
     API_KEY = OAUTH_API
-    SEARCH_ENGINE_ID = SEARCH_ENGINE_ID
+    ENGINE_ID = SEARCH_ENGINE_ID
 
     url = "https://www.googleapis.com/customsearch/v1"
 
     params = {
         'q': search_query,
         'key': API_KEY,
-        'cx': SEARCH_ENGINE_ID,
+        'cx': ENGINE_ID,
         'searchType': 'image'
     }
 
