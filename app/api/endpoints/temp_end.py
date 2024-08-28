@@ -34,12 +34,14 @@ router = APIRouter()
 @router.get("/get/recommended") # define route
 @limiter.limit("50/minute") # rate limiting middleware
 async def get_recommended(
+    preferred_food: str,
+    food_type: str,
     request: Request, # without this the limiter won't work
-    current_user: User = Depends(get_current_active_user) # for active user like auth
+    current_user: User = Depends(get_current_active_user), # for active user like auth
     ):
 
     # generate the meal set
-    is_generated = generate_and_insert_mealset(current_user)
+    is_generated = generate_and_insert_mealset(current_user, preferred_food, food_type)
     if is_generated:
         # get the inserted information
         inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
@@ -234,7 +236,7 @@ def remove_temp_foods(
   
   
 # get recommended foods by ai
-def generate_and_insert_mealset(user: User):
+def generate_and_insert_mealset(user: User, preferred_food: str, food_type: str):
     #change current user info to put into AI
     ai_input = f"""{{
     "weight": {user['weight']},
@@ -243,7 +245,9 @@ def generate_and_insert_mealset(user: User):
     "diseases": [{user['diseases']}],
     "allergies": [{user['allergies']}],
     "gender": "{"Female" if user['gender'] == 0 else "Male"}",
-    "exercise": "{user['exercises']}"
+    "exercise": "{user['exercises']}",
+    "preferred": "{preferred_food}",
+    "food-type": "{food_type}",
     }}"""
     # get_recommend food from ai generate
     recommend_food_sets = generate_food_suggestion(ai_input) 
