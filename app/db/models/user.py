@@ -48,9 +48,9 @@ class UserUpdateModel(BaseModel):
     username: Optional[str]
     weight: float
     height: float
-    age: int 
-    diseases: list[str]    
-    allergies: list[str]
+    age: int
+    diseases: List[str]    
+    allergies: List[str]
     gender: int
     exercises: str
 
