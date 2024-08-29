@@ -280,11 +280,11 @@ def generate_and_insert_mealset(user: User, preferred_food: str, food_type: str)
         # else we only insert
         # will insert 3 meal set so that need to iterate it
         for food in recommend_food_lists:
-                # add created at and updated at fields
-                food["created_at"] = datetime.utcnow()
-                food["updated_at"] = datetime.utcnow()
-                # insert into temp food table
-                temp_food_collection.insert_one(food)
+            # add created at and updated at fields
+            food["created_at"] = datetime.utcnow()
+            food["updated_at"] = datetime.utcnow()
+            # insert into temp food table
+            temp_food_collection.insert_one(food)
         return True
     return False
       
