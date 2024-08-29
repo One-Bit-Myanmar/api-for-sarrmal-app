@@ -53,6 +53,25 @@ async def get_confirmed_food_list(
     # return the filtered food_lists
     return {"response": "success", "data": food_lists}
     
+# get the food by the food id
+@router.get("/get/{food_id}") # init the get route
+@limiter.limit("50/minute") # rate limiting middleware
+async def get_confirmed_food_list(
+        food_id: str,
+        request: Request, # without this the limiter won't work
+        current_user: User = Depends(get_current_active_user) # get the current active user
+    ):
+    # get the food list by user id
+    get_food = food_collection.find_one({
+        "user_id": str(current_user["_id"]),
+        "food_id": str(food_id)
+    })
+    # change ObjectId into String id so that we can return with json format
+    for food in get_food:
+        food["_id"] = str(food["_id"])
+    # return the filtered food_lists
+    return {"response": "success", "data": get_food}
+
 
 
 @router.post("/get/calories")
