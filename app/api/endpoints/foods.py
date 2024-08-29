@@ -56,7 +56,7 @@ async def get_confirmed_food_list(
 # get the food by the food id
 @router.get("/get/{food_id}") # init the get route
 @limiter.limit("50/minute") # rate limiting middleware
-async def get_confirmed_food_list(
+async def get_confirm_food_by_id(
         food_id: str,
         request: Request, # without this the limiter won't work
         current_user: User = Depends(get_current_active_user) # get the current active user
