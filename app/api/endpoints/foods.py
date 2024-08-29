@@ -67,8 +67,7 @@ async def get_confirm_food_by_id(
         "food_id": str(food_id)
     })
     # change ObjectId into String id so that we can return with json format
-    for food in get_food:
-        food["_id"] = str(food["_id"])
+    get_food["_id"] = str(get_food["_id"])
     # return the filtered food_lists
     return {"response": "success", "data": get_food}
 
