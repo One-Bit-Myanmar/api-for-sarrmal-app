@@ -64,12 +64,15 @@ async def get_confirm_food_by_id(
     # get the food list by user id
     get_food = food_collection.find_one({
         "user_id": str(current_user["_id"]),
-        "food_id": str(food_id)
+        "_id": ObjectId(food_id)
     })
-    # change ObjectId into String id so that we can return with json format
-    get_food["_id"] = str(get_food["_id"])
-    # return the filtered food_lists
-    return {"response": "success", "data": get_food}
+    if get_food:
+        # change ObjectId into String id so that we can return with json format
+        get_food["_id"] = str(get_food["_id"])
+        # return the filtered food_lists
+        return {"response": "success", "data": get_food}
+    return HTTPException(status_code=404, detail="not found")
+    
 
 
 
