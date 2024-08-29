@@ -73,7 +73,7 @@ async def get_temp_foods(
         return {"response": "success", "data": inserted_foods}
     else:
     # generate the meal set
-        is_generated = generate_and_insert_mealset(current_user)
+        is_generated = generate_and_insert_mealset(current_user, "None", "None")
         if is_generated:
             # get the inserted information
             inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
@@ -124,6 +124,8 @@ async def confirm_food_lists(
         # Convert the cursor to a list and count the items
         food_list_of_today = list(food_list_of_today)
         food_count_of_today = len(food_list_of_today)
+        if food_count_of_today < 6:
+            raise HTTPException(status_code=403, detail="You have alredy eaten a meal in our planned mealset, you cant add these to the plan")
         if food_list_of_today:
             # Use food_count_of_today to splice the temp_foods_list
             for i, food in enumerate(temp_foods_list[:food_count_of_today]):
