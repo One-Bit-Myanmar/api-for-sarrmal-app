@@ -124,7 +124,7 @@ async def confirm_food_lists(
         # Convert the cursor to a list and count the items
         food_list_of_today = list(food_list_of_today)
         food_count_of_today = len(food_list_of_today)
-        if food_count_of_today < 6:
+        if food_count_of_today < 6 and food_count_of_today > 0:
             raise HTTPException(status_code=403, detail="You have alredy eaten a meal in our planned mealset, you cant add these to the plan")
         if food_list_of_today:
             # Use food_count_of_today to splice the temp_foods_list
