@@ -172,6 +172,8 @@ async def get_food_details(
     })
     # if selected food is exist then return it
     if selected_food:
+        # change ObjectId into String id so that we can return with json format
+        selected_food["_id"] = str(selected_food["_id"])
         return {"response": "success", "data": selected_food}
     else:
         raise HTTPException(status_code=404, detail="Not Found")
