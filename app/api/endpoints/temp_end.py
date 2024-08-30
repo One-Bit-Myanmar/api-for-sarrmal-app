@@ -36,12 +36,13 @@ router = APIRouter()
 async def get_recommended(
     preferred_food: str,
     food_type: str,
+    sugar_level: int,
     request: Request, # without this the limiter won't work
     current_user: User = Depends(get_current_active_user), # for active user like auth
     ):
 
     # generate the meal set
-    is_generated = generate_and_insert_mealset(current_user, preferred_food, food_type)
+    is_generated = generate_and_insert_mealset(current_user, preferred_food, food_type, sugar_level)
     if is_generated:
         # get the inserted information
         inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
