@@ -131,7 +131,7 @@ async def get_chat_history(
     print(start_of_today, start_of_tomorrow)
     # if chat not found then raise an error
     if not chats:
-        raise HTTPException(status_code=404, detail="No chats Found")
+        return {"response": "failed", "data": chats}
     for item in chats: # change the objectId to string so that we can get from json string
         item["_id"] = str(item["_id"])
     # return chats data
