@@ -24,12 +24,12 @@ OAUTH_API = os.environ["OAUTH_API"]
 SEARCH_ENGINE_ID = os.environ["SEARCH_ENGINE_ID"]
 
 # Google Image Search API
-OAUTH_API_1=os.environ("OAUTH_API_1")
-OAUTH_API_2=os.environ("OAUTH_API_2")
-OAUTH_API_3=os.environ("OAUTH_API_3")
-OAUTH_API_4=os.environ("OAUTH_API_4")
-OAUTH_API_5=os.environ("OAUTH_API_5")
-OAUTH_API_6=os.environ("OAUTH_API_6")
+OAUTH_API_1=os.environ["OAUTH_API_1"]
+OAUTH_API_2=os.environ["OAUTH_API_2"]
+OAUTH_API_3=os.environ["OAUTH_API_3"]
+OAUTH_API_4=os.environ["OAUTH_API_4"]
+OAUTH_API_5=os.environ["OAUTH_API_5"]
+OAUTH_API_6=os.environ["OAUTH_API_6"]
 
 # get connection
 def connect_to_database():
