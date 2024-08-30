@@ -238,7 +238,17 @@ def remove_temp_foods(
   
   
 # get recommended foods by ai
-def generate_and_insert_mealset(user: User, preferred_food: str, food_type: str):
+def generate_and_insert_mealset(user: User, preferred_food: str, food_type: str, sugar_level: int):
+
+    if sugar_level < 70:
+        sugar_status = f"{food_type} (Increase sugar intake)"
+    elif 70 <= sugar_level <= 99:
+        sugar_status = f"{food_type} (Maintain normal sugar intake)"
+    elif 100 <= sugar_level <= 125:
+        sugar_status = f"{food_type} (Moderate sugar intake)"
+    else:
+        sugar_status = f"{food_type} (Low sugar option)"
+
     #change current user info to put into AI
     ai_input = f"""{{
     "weight": {user['weight']},
@@ -249,8 +259,9 @@ def generate_and_insert_mealset(user: User, preferred_food: str, food_type: str)
     "gender": "{"Female" if user['gender'] == 0 else "Male"}",
     "exercise": "{user['exercises']}",
     "preferred": "{preferred_food}",
-    "food-type": "{food_type}",
+    "food-type": "{sugar_status}",
     }}"""
+    
     # get_recommend food from ai generate
     recommend_food_sets = generate_food_suggestion(ai_input) 
     # splice the dicts into pieces and append to list and return it 
