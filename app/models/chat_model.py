@@ -13,7 +13,6 @@ generation_config = {
     "top_p": 0.95
 }
 
-
 # Function to generate a response using Google Generative AI
 def generate_response(prompt):
     try:

@@ -4,7 +4,7 @@ import json
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from app.core.config import INITIAL_TOKEN, REFRESH_TOKEN, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
+from app.core.config import INITIAL_TOKEN, REFRESH_TOKEN, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_EXPIRY_DATE
 
 
 SCOPES = ['https://www.googleapis.com/auth/generative-language.retriever']
@@ -14,7 +14,7 @@ def load_creds():
 
     This function caches the generated tokens to minimize the use of the
     consent screen.
-    """
+    """    
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -34,7 +34,7 @@ def load_creds():
                   client_secret=OAUTH_CLIENT_SECRET, 
                   scopes=["https://www.googleapis.com/auth/generative-language.retriever"], 
                   universe_domain="googleapis.com", 
-                  account="", expiry="2024-08-24T20:12:44.703164Z")
+                  account="", expiry=OAUTH_EXPIRY_DATE)
             creds = Credentials.from_authorized_user_file('hello.json', SCOPES)
         # Save the credentials for the next run
         with open('hello.json', 'w') as token:
