@@ -74,7 +74,7 @@ async def get_temp_foods(
         return {"response": "success", "data": inserted_foods}
     else:
     # generate the meal set
-        is_generated = generate_and_insert_mealset(current_user, "None", "None")
+        is_generated = generate_and_insert_mealset(current_user, "Burmese", "Vegetarian", 100)
         if is_generated:
             # get the inserted information
             inserted_foods = list(temp_food_collection.find({"user_id": str(current_user["_id"])}))
